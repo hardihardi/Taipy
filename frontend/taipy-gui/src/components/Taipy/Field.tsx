@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-import React, { lazy, useMemo } from "react";
+import React, { lazy, useMemo, Suspense } from "react";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 
@@ -33,6 +33,7 @@ interface TaipyFieldProps extends TaipyBaseProps, TaipyHoverProps {
 const unsetWeightSx = { fontWeight: "unset" };
 
 const Markdown = lazy(() => import("react-markdown"));
+const {MathJax, MathJaxContext} = lazy(() => import("better-react-mathjax").then(module => module));
 
 const Field = (props: TaipyFieldProps) => {
     const { id, dataType, format, defaultValue, raw } = props;
@@ -77,7 +78,20 @@ const Field = (props: TaipyFieldProps) => {
                     <span className={className} id={id} style={style}>
                         {value}
                     </span>
-                ) : (
+                ) : mode == 'latex' ? (
+                <Suspense fallback={<div>Loading LaTex...</div>}>
+                    <MathJaxContext config={{
+                        tex: {
+                            inlineMath: [["$", "$"], ["\\(", "\\)"]],
+                            displayMath: [["$$", "$$"]],
+                        }
+                    }}>
+                        <MathJax className={className} id={id}>
+                            {value}
+                        </MathJax>
+                    </MathJaxContext>
+                </Suspense>
+            ) : (
                     <Typography
                         className={`${className} ${getComponentClassName(props.children)}`}
                         id={id}
