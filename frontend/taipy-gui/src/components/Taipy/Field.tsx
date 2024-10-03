@@ -44,6 +44,13 @@ const Field = (props: TaipyFieldProps) => {
 
     const mode = typeof props.mode === "string" ? props.mode.toLowerCase() : undefined;
 
+    const mathJaxConfig = {
+        tex: {
+            inlineMath: [["$", "$"], ["\\(", "\\)"]],
+            displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+        }
+    }
+
     const style = useMemo(
         () => ({ overflow: "auto", width: props.width ? getCssSize(props.width) : undefined }),
         [props.width]
@@ -80,12 +87,7 @@ const Field = (props: TaipyFieldProps) => {
                     </span>
                 ) : mode == 'latex' ? (
                 <Suspense fallback={<div>Loading LaTex...</div>}>
-                    <MathJaxContext config={{
-                        tex: {
-                            inlineMath: [["$", "$"], ["\\(", "\\)"]],
-                            displayMath: [["$$", "$$"], ["\\[", "\\]"]],
-                        }
-                    }}>
+                    <MathJaxContext config={mathJaxConfig}>
                         <MathJax className={className} id={id}>
                             {value}
                         </MathJax>
