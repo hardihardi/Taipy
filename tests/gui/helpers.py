@@ -18,7 +18,7 @@ import warnings
 
 from taipy.gui import Gui, Html, Markdown
 from taipy.gui._renderers.builder import _Builder
-from taipy.gui._warnings import TaipyGuiAlwaysWarning, TaipyGuiWarning
+from taipy.gui._warnings import TaipyGuiWarning
 from taipy.gui.utils._variable_directory import _reset_name_map
 from taipy.gui.utils.expr_var_name import _reset_expr_var_name
 
@@ -165,4 +165,4 @@ class Helpers:
 
     @staticmethod
     def get_taipy_warnings(warns: t.List[warnings.WarningMessage]) -> t.List[warnings.WarningMessage]:
-        return [w for w in warns if w.category is TaipyGuiWarning or w.category is TaipyGuiAlwaysWarning]
+        return [w for w in warns if issubclass(w.category, TaipyGuiWarning)]
