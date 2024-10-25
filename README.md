@@ -40,7 +40,7 @@ No more compromises on performance, customization, and scalability.
 - [What's Taipy?](#%EF%B8%8F-whats-taipy)
 - [Key Features](#-key-features)
 - [Quickstart](#️-quickstart)
-- [Scenario & Data Management](#-scenario--data-management)
+- [Scenario and Data Management](#-scenario--data-management)
 - [Taipy Studio](#taipy-studio)
 - [User Interface Generation and Scenario & Data Management](#user-interface-generation-and-scenario--data-management)
 - [Contributing](#%EF%B8%8F-contributing)
@@ -129,8 +129,6 @@ This is the execution graph of the scenario we are implementing:
 <p align="center">
 <img src="https://github.com/Avaiga/taipy/raw/develop/readme_img/readme_exec_graph.png" width="600" align="center" />
 </p>
-
-&nbsp;
 
 ### Taipy Studio
 
@@ -225,11 +223,11 @@ And the final result:
 <img src="readme_img/readme_app.gif"  width="70%" align="center" />
 </p>
 
+&nbsp;
+
 ## ⚒️ Contributing
 
 Want to help build Taipy? Check out our [**Contributing Guide**](https://github.com/Avaiga/taipy/blob/develop/CONTRIBUTING.md).
-
-&nbsp;
 
 ## 🪄 Code of Conduct
 
