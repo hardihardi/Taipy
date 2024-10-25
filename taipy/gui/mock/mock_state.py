@@ -33,7 +33,7 @@ class MockState(State):
         self._gui = gui
         super().__init__()
 
-    def get_gui(self) -> "Gui":
+    def get_gui(self) -> Gui:
         return self._gui
 
     def __getattribute__(self, name: str) -> t.Any:
