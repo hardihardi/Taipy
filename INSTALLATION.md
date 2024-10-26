@@ -16,12 +16,11 @@ to the [source installation] (#installing-for-development) section.
     to the contributing page to get more information.
 
 
-# Installing Taipy library
-
+# Installing Taipy library:-
 
 ## Installing from PyPI:-
 
-## Prerequisite
+## Prerequisite:-
 
 
 Before installing Taipy, ensure you have Python (**version 3.9 or later**) and
@@ -60,9 +59,10 @@ command:
 conda install pip
 ```
 
-## The latest stable release from Pypi
+## The latest stable release from Pypi:-
 
-### Pip
+### Pip:-
+
 The preferred method to install Taipy is by using **pip**. After downloading Taipy package
 from **[PyPI repository](https://pypi.org/project/taipy/)** the following commands install
 it in the Python environment with all its dependencies. Open your terminal or command prompt
@@ -71,14 +71,16 @@ and run the following command:
 pip install taipy
 ```
 
-### Pipenv
+### Pipenv:-
+
 If you are using a virtual environment with **[Pipenv](https://pipenv.pypa.io/en/latest/)**,
 use the following command:
 ```console
 pipenv install taipy
 ```
 
-### Venv
+### Venv:-
+
 Alternatively, you can use `venv` to create a virtual environment. Please run the following
 commands replacing `<myenv>` (twice) with your desired environment name:
 ```console
@@ -88,7 +90,8 @@ source myenv/bin/activate  # On Windows use `<myenv>\Scripts\activate`
 pip install taipy
 ```
 
-### Conda
+### Conda:-
+
 If you prefer to work within a [Conda](https://docs.conda.io/projects/conda/en/latest/index.html)
 environment, you can install Taipy using the following commands replacing `<myenv>` with your
 desired environment name:
@@ -115,9 +118,10 @@ contributors whom we praise for their input.
 
 The development version of Taipy can be installed using *pip* and *git*:-
 
-## A specific version from PyPI
+## A specific version from PyPI:-
 
-### Pip
+### Pip:-
+
 To install a specific version of Taipy, use the following command replacing `<version>` with a
 specific version number of Taipy among the
 **[list of all released Taipy versions](https://pypi.org/project/taipy/#history)**:
@@ -126,7 +130,8 @@ pip install taipy==<version>
 ```
 
 
-### Pipenv
+### Pipenv:-
+
 If you are using a virtual environment with **[Pipenv](https://pipenv.pypa.io/en/latest/)**,
 use the following command:
 ```console
@@ -139,7 +144,8 @@ pipenv install taipy==<version>
 If you need the source code for Taipy on your system so you can see how things are done or maybe
 participate in the improvement of the packages, you can clone the GitHub repository:-
 
-### Venv
+### Venv:-
+
 Alternatively, you can use `venv` to create a virtual environment:
 ```console
 python -m venv myenv
@@ -148,7 +154,8 @@ pip install taipy==<version>
 ```
 
 
-### Conda
+### Conda:-
+
 If you prefer to work within a [Conda](https://docs.conda.io/projects/conda/en/latest/index.html)
 environment, you can install Taipy using the following commands replacing `<myenv>` with your
 desired environment name:
@@ -158,12 +165,12 @@ conda activate <myenv>
 pip install taipy==<version>
 ```
 
-## A development version from GitHub
-
+## A development version from GitHub:-
 
 ### Building the JavaScript bundles:-
 
-### Pip
+### Pip:-
+
 The development version of Taipy is hosted on
 **[GitHub repository](https://git@github.com/Avaiga/taipy)** using the `develop` branch. This
 branch is updated daily with changes from the Taipy R&D team and external contributors whom we
@@ -195,7 +202,8 @@ pip install git+https://git@github.com/Avaiga/taipy
 ```
 
 
-### Pipenv
+### Pipenv:-
+
 If you are using a virtual environment with **[Pipenv](https://pipenv.pypa.io/en/latest/)**,
 use the following command:
 ```console
@@ -205,7 +213,8 @@ pipenv install git+https://git@github.com/Avaiga/taipy
 
 Here is the sequence of commands that can be issued to build both sets of files:-
 
-### Venv
+### Venv:-
+
 Alternatively, you can use `venv` to create a virtual environment:
 ```console
 python -m venv myenv
@@ -214,7 +223,8 @@ pip install git+https://git@github.com/Avaiga/taipy
 ```
 
 
-### Conda
+### Conda:-
+
 If you prefer to work within a [Conda](https://docs.conda.io/projects/conda/en/latest/index.html)
 environment, you can install Taipy using the following commands replacing `<myenv>` with your
 desired environment name:
@@ -224,8 +234,7 @@ conda activate <myenv>
 pip install git+https://git@github.com/Avaiga/taipy
 ```
 
-# Installing Taipy with Colab
-
+# Installing Taipy with Colab:-
 
 ### Debugging the JavaScript bundles:-
 
@@ -266,10 +275,10 @@ Google Colab is a popular and free Jupyter notebook environment that requires no
 and runs entirely in the cloud. To install Taipy in Google Colab, follow these simple
 steps:
 
-1. **Open a new Colab notebook**: Visit [Google Colab](https://colab.research.google.com)
+1. **Open a new Colab notebook:-** Visit [Google Colab](https://colab.research.google.com)
     and start a new notebook.
 
-2. **Run the installation command**: In a new cell, enter the following command and run
+2. **Run the installation command:-** In a new cell, enter the following command and run
     the cell to install the latest stable release of Taipy in your Colab environment:
 
 
@@ -280,7 +289,7 @@ steps:
 
 Then you can run the tests with the following command:-
 
-3. **Start building your app**: Follow this
+3. **Start building your app:-** Follow this
     [tutorial](https://docs.taipy.io/en/latest/tutorials/articles/colab_with_ngrok/) to build
     and run your Taipy web application directly within the Colab notebook.
 
