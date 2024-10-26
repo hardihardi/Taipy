@@ -8,18 +8,19 @@ other users in our forums, [stack**overflow**](https://stackoverflow.com/), etc.
 
 For questions, please get in touch on [Discord](https://discord.com/invite/SJyz2VJGxV) or on GitHub with a discussion or an issue.
 
-## Code organisation
+## Code organisation:-
 
-Taipy is organised in two main repositories:
+Taipy is organised in two main repositories:-
 
 - [taipy](https://github.com/Avaiga/taipy) is the main repository that contains the code of Taipy packages.
+
 - [taipy-doc](https://github.com/Avaiga/taipy-doc) is the documentation repository.
 
 ## Never contributed to an open source project before ?
 
 Have a look on this [GitHub documentation](https://docs.github.com/en/get-started/quickstart/contributing-to-projects).
 
-## Report bugs
+## Report bugs:-
 
 Reporting bugs is through [GitHub issues](https://github.com/Avaiga/taipy/issues).
 
@@ -29,19 +30,19 @@ describe the issue.
 The Taipy team will analyze and try to reproduce the bug to provide feedback. If confirmed, we will add a priority
 to the issue and add it in our backlog. Feel free to propose a pull request to fix it.
 
-## Issue reporting, feedback, proposal, design or any other comment
+## Issue reporting, feedback, proposal, design or any other comment:-
 
 Any feedback or proposal is greatly appreciated! Do not hesitate to create an issue with the appropriate template on
 [GitHub](https://github.com/Avaiga/taipy/issues).
 
 The Taipy team will analyse your issue and return to you as soon as possible.
 
-## Improve Documentation
+## Improve Documentation:-
 
 Do not hesitate to create an issue or pull request directly on the
 [taipy-doc repository](https://github.com/Avaiga/taipy-doc).
 
-## Implement Features
+## Implement Features:-
 
 The Taipy team manages its backlog in private. Each issue that is or is going to be engaged by the
 Taipy team is attached to the "🔒 Staff only" label or has already been assigned to a Taipy team member.
@@ -55,7 +56,7 @@ will bring to Taipy.
 If you want to work on an issue, please add a comment and wait to be assigned to the issue to inform
 the community that you are working on it.
 
-### Contribution workflow
+### Contribution workflow:-
 
 1. Make your [own fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) of the repository
    target by the issue. Clone it on our local machine, then go inside the directory.
@@ -92,49 +93,60 @@ the community that you are working on it.
 6. The Taipy team will have a look at your Pull Request and will give feedback. If every requirement is valid, your
    work will be added in the next release, congratulations!
 
-## Coding style and best practices
+## Coding style and best practices:-
 
-### Python
+### Python:-
 
 Taipy's repositories follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) and
 [PEP 484](https://www.python.org/dev/peps/pep-0484/) coding convention.
 
-## TypeScript
+## TypeScript:-
 
 Taipy's repositories use the [ESLint](https://eslint.org/) and
 [TypeScript ESLint](https://github.com/typescript-eslint/typescript-eslint) plugin to ensure a common set of rules.
 
-### Git branches
+### Git branches:-
 
 All new development happens in the `develop` branch. All pull requests should target that branch.
 We are following a strict branch naming convention based on the pattern: `<type>/#<issueId>[IssueSummary]`.
 
-Where:
+Where:-
 
-- `<type>` would be one of:
+- `<type>` would be one of:-
     - feature: new feature implementation, or improvement of a feature.
+
     - bug: bug fix.
+
     - review: change provoked by review comment not immediately taken care of.
+
     - refactor: refactor of a piece of code.
+
     - doc: doc changes (complement or typo fixes…).
+
     - build: in relation with the build process.
+
 - `<issueId>` is the processed issue identifier. The advantage of explicitly indicating the issue number is that in
+
   GitHub, a pull request page shows a direct link to the issue description.
+
 - `[IssueSummary]` is a short summary of the issue topic, not including spaces, using Camel case or lower-case,
   dash-separated words. This summary, with its dash (‘-’) symbol prefix, is optional.
 
-## Important Notes
+## Important Notes:-
 
 - If your PR is not created or there is no other activity within 14 days of being assigned to the issue, a warning message will appear on the issue, and the issue will be marked as "🥶Waiting for contributor".
+
 - If your issue is marked as "🥶Waiting for contributor", you will be unassigned after 14 days of inactivity.
+
 - Similarly, if there is no activity within 14 days of your PR, the PR will be marked as "🥶Waiting for contributor".
+
 - If your PR is marked as "🥶Waiting for contributor", it will be closed after 14 days of inactivity.
 
-We do this in order to keep our backlog moving quickly. Please don't take it personally if your issue or PR gets closed
+We do this in order to keep our backlog moving quickly. Please don't take it personally if your issue or PR gets closed.
 because of this 14-day inactivity time limit. You can always reopen the issue or PR if you're still interested in working
 on it.
 
-## Dependency management
+## Dependency management:-
 
 Taipy comes with multiple optional packages. You can find the list directly in the product or Taipy's packages.
 The back-end Pipfile does not install by default optional packages due to `pyodbc` requiring a driver's manual
