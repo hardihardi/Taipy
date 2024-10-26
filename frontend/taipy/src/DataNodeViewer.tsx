@@ -41,6 +41,9 @@ import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import ReactJson from 'react-json-view';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 import ArrowForwardIosSharp from "@mui/icons-material/ArrowForwardIosSharp";
 import Cancel from "@mui/icons-material/Cancel";
@@ -756,6 +759,29 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                 ) : null}
                             </Stack>
                         </Box>
+                        <div>
+                            { dtType === "json" ? (
+                                <>
+                                <Grid container spacing={2}>
+                                    <Grid xs={12}>
+                                        <Typography variant="subtitle2">JSON Data</Typography>
+                                    </Grid>
+                                    <Grid xs={12}>
+                                        <ReactJson
+                                            // json data as prop
+                                            src={dtValue}
+                                            // it will be collapsed intitially
+                                            collapsed={true}
+                                            // disabling copy to clipboard
+                                            enableClipboard={true}
+                                            // hide data type
+                                            displayDataTypes={false}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                </>
+                            )}
+                        </div>
                         <div
                             role="tabpanel"
                             hidden={tabValue !== TabValues.Properties}
