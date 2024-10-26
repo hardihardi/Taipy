@@ -110,8 +110,6 @@ is the perfect place to begin your journey and unlock the full potential of Taip
 
 ## 🔌 Scenario and Data Management:-
 
-## 🔌 Scenario & Data Management
-
 
 Let's create a simple scenario in Taipy that allows you to filter movie data based on your chosen genre.<br />
 This scenario is designed as a straightforward pipeline.<br />
@@ -241,9 +239,6 @@ Want to help build Taipy? Check out our [**Contributing Guide**](https://github.
 
 
 ## 🪄 Code of conduct:-
-
-## 🪄 Code of Conduct
-
 
 Want to be part of the Taipy community? Check out our [**Code of Conduct**](https://github.com/Avaiga/taipy/blob/develop/CODE_OF_CONDUCT.md)
 
