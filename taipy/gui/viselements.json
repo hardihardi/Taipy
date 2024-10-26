@@ -351,6 +351,57 @@
                         "type": "Union[str,int]",
                         "default_value": "None",
                         "doc": "The width of the date element."
+                    },
+                    {
+                        "name": "analogic",
+                        "type": "bool",
+                        "default_value": "False",
+                        "doc": "Whether or not to show timepicker as a clock."
+                    }
+                ]
+            }
+        ],
+        [
+            "time",
+            {
+                "inherits": [
+                    "on_change",
+                    "propagate"
+                ],
+                "properties": [
+                    {
+                        "name": "analogic",
+                        "type": "bool",
+                        "default_value": "False",
+                        "doc": "Whether or not to show timepicker as a clock."
+                    },
+                    {
+                        "name": "format",
+                        "type": "str",
+                        "doc": "The format to apply to the value. See below."
+                    },
+                    {
+                        "name": "editable",
+                        "type": "dynamic(bool)",
+                        "default_value": "True",
+                        "doc": "Shows the time as a formatted string if not editable."
+                    },
+                    {
+                        "name": "time",
+                        "default_property": true,
+                        "type": "dynamic(str)",
+                        "doc": "The time that this control represents and can modify"
+                    },
+                    {
+                        "name": "label",
+                        "type": "str",
+                        "doc": "The label associated with the input."
+                    },
+                    {
+                        "name": "width",
+                        "type": "Union[str,int]",
+                        "default_value": "None",
+                        "doc": "The width of the time element."
                     }
                 ]
             }
@@ -401,6 +452,12 @@
                         "type": "Union[str,int]",
                         "default_value": "None",
                         "doc": "The width of the date_range element."
+                    },
+                    {
+                        "name": "analogic",
+                        "type": "bool",
+                        "default_value": "False",
+                        "doc": "Whether or not to show timepicker as a clock."
                     }
                 ]
             }
@@ -1564,6 +1621,39 @@
             }
         ],
         [
+            "alert",  
+            {
+                "inherits": ["shared"],
+                "properties": [
+                    {
+                        "name": "message",
+                        "default_property": true,
+                        "type": "dynamic(str)",
+                        "default_value": "\"\"",
+                        "doc": "The message displayed in the notification. Can be a dynamic string."
+                    },
+                    {
+                        "name": "severity",
+                        "type": "dynamic(str)",
+                        "default_value": "\"error\"",
+                        "doc": "The severity level of the alert. Valid values: \"error\", \"warning\", \"info\", \"success\".\nThe default is \"error\"."
+                    },
+                    {
+                        "name": "variant",
+                        "type": "dynamic(str)",
+                        "default_value": "\"filled\"",
+                        "doc": "The variant of the alert. Valid values: \"filled\", \"outlined\".\nThe default is \"filled\"."
+                    },
+                    {
+                        "name": "render",
+                        "type": "dynamic(bool)",
+                        "default_value": "True",
+                        "doc": "If False, the alert is hidden."
+                    }
+                ]
+            }                       
+        ],
+        [
             "status",
             {
                 "inherits": [
@@ -1639,7 +1729,7 @@
                         "default_property": true,
                         "required": true,
                         "type": "dynamic(list[str])",
-                        "doc": "The list of messages. Each item of this list must consist of a list of three strings: a message identifier, a message content, and a user identifier."
+                        "doc": "The list of messages. Each item of this list must consist of a list of three strings: a message identifier, a message content, a user identifier, and an image URL."
                     },
                     {
                         "name": "users",
@@ -1699,6 +1789,12 @@
                         "type": "str",
                         "default_value": "\"markdown\"",
                         "doc": "Define the way the messages are processed when they are displayed:\n<ul><li>&quot;raw&quot; no processing</li><li>&quot;pre&quot;: keeps spaces and new lines</li><li>&quot;markdown&quot; or &quot;md&quot;: basic support for Markdown.</li></ul>"
+                    },
+                    {
+                        "name": "max_file_size",
+                        "type": "int",
+                        "default_value": "1024 * 1024",
+                        "doc": "The maximum allowable file size, in bytes, for files uploaded to a chat message.\nThe default is 1 MB."
                     }
                 ]
             }
@@ -1735,7 +1831,7 @@
                     }
                 ]
             }
-        ]
+        ]                                       
     ],
     "blocks": [
         [
