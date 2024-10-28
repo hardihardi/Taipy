@@ -30,7 +30,7 @@ interface MetricProps extends TaipyBaseProps, TaipyHoverProps {
     defaultValue?: number;
     delta?: number;
     defaultDelta?: number;
-    type?: string | null;
+    type?: string;
     min?: number;
     max?: number;
     deltaColor?: string;
@@ -87,7 +87,7 @@ const Metric = (props: MetricProps) => {
     }, [props.colorMap, props.max]);
 
     const data = useMemo(() => {
-        const mode = props.type === null || (typeof props.type === "string" && props.type.toLowerCase() === "none") ? [] : ["gauge"];
+        const mode = typeof props.type === "string" && props.type.toLowerCase() === "none" ? [] : ["gauge"];
         showValue && mode.push("number");
         delta !== undefined && mode.push("delta");
         const deltaIncreasing = props.deltaColor
