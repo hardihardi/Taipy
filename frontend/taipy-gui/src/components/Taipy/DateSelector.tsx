@@ -47,6 +47,7 @@ interface DateSelectorProps extends TaipyActiveProps, TaipyChangeProps {
     label?: string;
     width?: string | number;
     analogic? :boolean;
+    minuteJump? :number;
 }
 
 const boxSx = { display: "inline-block" };
@@ -59,7 +60,7 @@ const analogicRenderers = {
 }
 
 const DateSelector = (props: DateSelectorProps) => {
-    const { updateVarName, withTime = false, id, propagate = true, analogic = false } = props;
+    const { updateVarName, withTime = false, id, propagate = true, analogic = false, minuteJump = 15 } = props;
     const dispatch = useDispatch();
     const formatConfig = useFormatConfig();
     const tz = formatConfig.timeZone;
@@ -133,6 +134,7 @@ const DateSelector = (props: DateSelectorProps) => {
                                     format={props.format}
                                     sx={dateSx}
                                     viewRenderers={ analogic ? analogicRenderers : undefined }
+                                    timeSteps={{minutes: minuteJump}}
                                 />
                         ) : (
                             <DatePicker
