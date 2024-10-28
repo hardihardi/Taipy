@@ -607,9 +607,10 @@ class _Factory:
                 ("active", PropertyType.dynamic_boolean, True),
                 ("analogic", PropertyType.boolean),
                 ("editable", PropertyType.dynamic_boolean, True),
+                ("format",),
                 ("hover_text", PropertyType.dynamic_string),
                 ("label",),
-                ("format",),
+                ("minute_jump", PropertyType.number),
                 ("width", PropertyType.string_or_number),
             ]
         )
