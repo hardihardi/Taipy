@@ -33,11 +33,12 @@ interface TimeSelectorProps extends TaipyActiveProps, TaipyChangeProps {
   label?: string;
   time: string;
   width?: string | number;
+  minuteJump?: number;
 }
 
 const boxSx = { display: "inline-block" };
 const TimeSelector = (props: TimeSelectorProps) => {
-  const { analogic = false, id, updateVarName, propagate = true } = props;
+  const { analogic = false, id, updateVarName, propagate = true, minuteJump =15 } = props;
   const [value, setValue] = useState(() => getTime(props.defaultTime));
   const dispatch = useDispatch();
   const module = useModule();
@@ -102,6 +103,7 @@ const TimeSelector = (props: TimeSelectorProps) => {
                 label={props.label}
                 format={props.format}
                 sx={timeSx}
+                timeSteps={{minutes:minuteJump}}
               />
             )
           ):(
