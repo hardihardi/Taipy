@@ -296,8 +296,8 @@ describe("Metric Component", () => {
         });
     });
     
-    it("processes type prop correctly when type is NONE (all uppercase)", async () => {
-        const { container } = render(<Metric type="NONE" />);
+    it("processes type prop correctly when type is None", async () => {
+        const { container } = render(<Metric type="None" />);
         await waitFor(() => {
             const angularElm = container.querySelector(".angular");
             const angularAxis = container.querySelector(".angularaxis");
