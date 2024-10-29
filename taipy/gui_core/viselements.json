@@ -430,22 +430,28 @@
                         "doc": "If False, the data node expiration date is not visible."
                     },
                     {
-                        "name": "show_properties",
+                        "name": "show_custom_properties",
                         "type": "bool",
                         "default_value": "True",
                         "doc": "If False, the data node properties are not visible."
                     },
                     {
+                        "name": "show_properties",
+                        "type": "bool",
+                        "default_value": "True",
+                        "doc": "If False, the data node properties tab is not visible."
+                    },
+                    {
                         "name": "show_history",
                         "type": "bool",
                         "default_value": "True",
-                        "doc": "If False, the data node history is not visible."
+                        "doc": "If False, the data node history tab is not visible."
                     },
                     {
                         "name": "show_data",
                         "type": "bool",
                         "default_value": "True",
-                        "doc": "If False, the data node value is not visible."
+                        "doc": "If False, the data node value tab is not visible."
                     },
                     {
                         "name": "show_owner_label",
@@ -583,7 +589,7 @@
                     {
                         "name": "class_name",
                         "type": "dynamic(str)",
-                        "doc": "The list of CSS class names associated with the generated HTML Element.<br/>These class names will be added to the default <code>taipy_gui_core-&lt;element_type&gt;</code>."
+                        "doc": "The list of CSS class names associated with the generated HTML Element.<br/>These class names will be added to the default <code>taipy_gui_core-[element_type]</code>."
                     }
                 ]
             }
