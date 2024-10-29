@@ -445,7 +445,7 @@
                         "name": "show_custom_properties",
                         "type": "bool",
                         "default_value": "True",
-                        "doc": "If False, the data node properties are not visible."
+                        "doc": "If False, the custom properties for this data node properties are not visible in the Properties tab."
                     },
                     {
                         "name": "show_edit_date",
