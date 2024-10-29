@@ -321,6 +321,11 @@
                         "doc": "Whether or not to show the time part of the date."
                     },
                     {
+                        "name": "minute_jump",
+                        "type": "dynamic(int)",
+                        "doc": "The time steps between two time unit options"
+                    },
+                    {
                         "name": "format",
                         "type": "str",
                         "doc": "The format to apply to the value. See below."
@@ -381,6 +386,11 @@
                         "doc": "The format to apply to the value. See below."
                     },
                     {
+                        "name": "minute_jump",
+                        "type": "dynamic(int)",
+                        "doc": "The time steps between two time unit options"
+                    },
+                    {
                         "name": "editable",
                         "type": "dynamic(bool)",
                         "default_value": "True",
@@ -425,6 +435,11 @@
                         "type": "bool",
                         "default_value": "False",
                         "doc": "Whether or not to show the time part of the date."
+                    },
+                    {
+                        "name": "minute_jump",
+                        "type": "dynamic(int)",
+                        "doc": "The time steps between two time unit options"
                     },
                     {
                         "name": "format",
