@@ -22,6 +22,8 @@ import React, {
     SyntheticEvent,
     MouseEvent,
     useRef,
+    lazy,
+    Suspense,
 } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -56,7 +58,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { format } from "date-fns";
 import deepEqual from "fast-deep-equal/es6";
-import ReactJson from 'react-json-view';
 
 import {
     ColumnDesc,
@@ -95,6 +96,8 @@ import CoreSelector from "./CoreSelector";
 import { useUniqueId } from "./utils/hooks";
 import DataNodeChart from "./DataNodeChart";
 import DataNodeTable from "./DataNodeTable";
+
+const LazyReactJson = lazy(() => import("react-json-view"));
 
 const editTimestampFormat = "YYY/MM/dd HH:mm";
 
@@ -757,29 +760,6 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                 ) : null}
                             </Stack>
                         </Box>
-                        <div>
-                            { dtType === "json" ? (
-                                <>
-                                <Grid container spacing={2}>
-                                    <Grid xs={12}>
-                                        <Typography variant="subtitle2">JSON Data</Typography>
-                                    </Grid>
-                                    <Grid xs={12}>
-                                        <ReactJson
-                                            // json data as prop
-                                            src={dtValue}
-                                            // it will be collapsed intitially
-                                            collapsed={true}
-                                            // disabling copy to clipboard
-                                            enableClipboard={true}
-                                            // hide data type
-                                            displayDataTypes={false}
-                                        />
-                                    </Grid>
-                                </Grid>
-                                </>
-                            )}
-                        </div>
                         <div
                             role="tabpanel"
                             hidden={tabValue !== TabValues.Properties}
@@ -1040,6 +1020,28 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </Grid>
+                                                    </>
+                                                ) : dtType === "json" ? (
+                                                    <>
+                                                    <Suspense>
+                                                        <Grid container spacing={2}>
+                                                            <Grid xs={12}>
+                                                                <Typography variant="subtitle2">JSON Data</Typography>
+                                                            </Grid>
+                                                            <Grid xs={12}>
+                                                                <LazyReactJson
+                                                                    // json data as prop
+                                                                    src={dtValue}
+                                                                    // collapsed intitially
+                                                                    collapsed={true}
+                                                                    // disabling copy to clipboard
+                                                                    enableClipboard={true}
+                                                                    // hide data type
+                                                                    displayDataTypes={false}
+                                                                />
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Suspense>
                                                     </>
                                                 ) : dtType == "date" &&
                                                   (dataValue === null || dataValue instanceof Date) ? (
