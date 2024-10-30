@@ -12,7 +12,8 @@
 from __future__ import annotations
 
 import typing as t
-
+import time
+from threading import Lock
 from ._page import _Page
 from ._warnings import _warn
 from .state import State
@@ -44,6 +45,9 @@ class Partial(_Page):
     _PARTIALS = "__partials"
 
     __partials: t.Dict[str, Partial] = {}
+    __update_lock = Lock()
+    __last_update_time: t.Dict[str, float] = {}
+    __update_interval: 0.05
 
     def __init__(self, route: t.Optional[str] = None):
         super().__init__()
@@ -52,6 +56,14 @@ class Partial(_Page):
             Partial.__partials[self._route] = self
         else:
             self._route = route
+        self.__last_update_time[self._route] = 0.0
+        self.__pending_content = None
+        self.__pending_state = None
+
+    def _should_update(self) -> bool:
+        current_time = time.time()
+        last_update = self.__last_update_time(self._route, 0)
+        return (current_time - last_update) >= self.__update_interval
 
     def update_content(self, state: State, content: t.Union[str, "Page"]):
         """Update partial content.
@@ -60,10 +72,24 @@ class Partial(_Page):
             state (State^): The current user state as received in any callback.
             content (str): The new content to use and display.
         """
-        if state and state._gui and callable(state._gui._update_partial):
-            state._gui._update_partial(self.__copy(content))
-        else:
-            _warn("'Partial.update_content()' must be called in the context of a callback.")
+        with self.__update_lock:
+            if state and state._gui and callable(state._gui._update_partial):
+                state._gui._update_partial(self.__copy(content))
+            else:
+                _warn("'Partial.update_content()' must be called in the context of a callback.")
+
+            self.__pending_content = content
+            self.__pending_state = state
+
+            if self._should_update():
+                try:
+                    state._gui._update_partial(self.__copy(contend))
+                    self.__last_update_time[self._route] = time.time()
+                    self.__pending_content = None
+                    self.__pending_state = None
+                except Exception as e:
+                    _warn(f"Failed to update partial content: {str(e)}")
+
 
     def __copy(self, content:  t.Union[str, "Page"]) -> Partial:
         new_partial = Partial(self._route)
@@ -78,3 +104,16 @@ class Partial(_Page):
                 else None
             )
         return new_partial
+
+    def _process_pending_update(self):
+        with self.__update_lock:
+            if self.__pending_content and self.__pending_state and self._should_update():
+                try:
+                    self.__pending_state.__gui._update_partial(
+                        self.__copy(self.__pending_content)
+                    )
+                    self.__last_update_time[self._route] = time.time()
+                    self.__pending_content = None
+                    self.__pending_state = None
+                except Exception as e:
+                    _warn(f"Failed to update partial content: {str(e)}")
