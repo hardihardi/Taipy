@@ -21,7 +21,7 @@ import mpld3
 
 # Define data
 employee_performance = [2, 3.5, 2, 3.5, 3, 4]
-happiness_scores = [2, 3, 4, 3, 2, 3]
+happiness_scores = [2, 3, 4, 5, 2, 3]
 
 # Calculate sizes based on product of performance and happiness, scaled to 1-100%
 sizes = [e * h * 20 for e, h in zip(employee_performance, happiness_scores)]
