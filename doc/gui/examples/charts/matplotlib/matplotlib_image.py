@@ -14,9 +14,9 @@
 #     python <script>
 # -----------------------------------------------------------------------------------------
 # Matplotlib scatter chart example
-from taipy.gui import Gui, Markdown
-import matplotlib.pyplot as plt
 import os
+import matplotlib.pyplot as plt
+from taipy.gui import Gui, Markdown
 
 # Generate a scatter plot
 x = [1, 2, 3, 4, 5]  # x axis values
