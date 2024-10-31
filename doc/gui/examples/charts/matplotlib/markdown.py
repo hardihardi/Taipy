@@ -18,8 +18,9 @@
 # -----------------------------------------------------------------------------------------
 # Matplotlib example
 import numpy as np
-from taipy.gui import Gui, Markdown
 import matplotlib.pyplot as plt
+
+from taipy.gui import Gui, Markdown
 
 fig = plt.figure(figsize=(5,4))
 xx = np.arange(0, 2 * np.pi, 0.01)
