@@ -63,24 +63,15 @@ ax.add_artist(legend1)
 # Adjust layout to ensure everything fits
 plt.tight_layout(rect=[0, 0, 0.75, 1])
 
-# Save the figure as a PNG image
-output_dir = './images'
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-content = "./images/figure.png"
-plt.savefig(content)
-
 # Define Taipy page content
 page_content = Markdown("""
 # Matplotlib 2D Scatter Plot
-<|{content}|image|class_name=scatter-plot|>
+<|part|content={fig}|class_name=scatter-plot|>
 """,style={
     ".scatter-plot": {
         "display": "block",
         "margin": "auto",
-        "max-width": "100% !important",
-        "width": "1000px !important",
-        "height": "520px !important" 
+        "height": "560px"
     }
 }
 )
