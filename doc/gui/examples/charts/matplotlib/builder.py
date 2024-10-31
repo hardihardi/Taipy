@@ -28,9 +28,16 @@ xx = np.arange(0, 2 * np.pi, 0.01)
 plot = fig.subplots(1, 1)
 plot.fill(xx, np.sin(xx), facecolor="none", edgecolor="purple", linewidth=2)
 
-with tgb.Page() as page:
+with tgb.Page(
+    style={
+        ".matplotlib_example": {
+            "display": "inline-flex", "width": "520px", "height": "420px"
+            }
+        }
+) as page:
     tgb.text(value="# Taipy Example for Matplotlib Integration", mode="md")
-    tgb.part(content="{fig}", height="420px", width= "520px")
+    tgb.part(content="{fig}", class_name = "matplotlib_example")
+
 
 # Run the Taipy Application:
 if __name__ == "__main__":
