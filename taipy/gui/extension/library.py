@@ -14,7 +14,6 @@ import sys
 import typing as t
 import xml.etree.ElementTree as etree
 from abc import ABC, abstractmethod
-from glob import glob
 from inspect import isclass
 from pathlib import Path
 from urllib.parse import urlencode, urlparse
@@ -334,13 +333,13 @@ class ElementLibrary(ABC):
 
     def _do_get_relative_paths(self, paths: t.List[str]) -> t.List[str]:
         ret = set()
-        for script in paths or []:
-            if bool(urlparse(script).netloc):
-                ret.add(script)
-            elif glob_paths := glob(script, root_dir=self.__get_class_folder()):
-                ret.update([gp.replace("\\", "/") for gp in glob_paths])
-            elif script:
-                ret.add(script)
+        for path in paths or []:
+            if bool(urlparse(path).netloc):
+                ret.add(path)
+            elif file_paths := self.__get_class_folder().glob(path):
+                ret.update([file_path.relative_to(self.__get_class_folder()).as_posix() for file_path in file_paths])
+            elif path:
+                ret.add(path)
         return list(ret)
 
     def get_scripts(self) -> t.List[str]:
