@@ -14,10 +14,11 @@
 #     python <script>
 # -----------------------------------------------------------------------------------------
 # Matplotlib scatter chart example
-from taipy.gui import Gui
+from taipy.gui import Gui, Markdown
 import matplotlib.pyplot as plt
 import numpy as np
 import mpld3
+import os
 
 # Define data
 employee_performance = [2, 3.5, 2, 3.5, 3, 4]
@@ -63,29 +64,27 @@ ax.add_artist(legend1)
 # Adjust layout to ensure everything fits
 plt.tight_layout(rect=[0, 0, 0.75, 1])  # Adjust the rect parameter to leave space for the legend
 
+# Save the figure as a PNG image
+output_dir = './images'
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+content = "./images/figure.png"
+plt.savefig(content)
+
 # Define Taipy page content
-page = Markdown(
-  """
-  <|toggle|theme|>
-  # **Matplotlib** 2D Scatter Plot
-
-  This page contains a 2D scatter plot created with Matplotlib: 
-
-  <|part|class_name='scatter-plot'|content={fig}|>
-  """, 
-  style={
-      "img": {
-          "display": "block",
-          "margin": "auto"
-      },
-      ".scatter-plot": {
-          "height": "560px",
-          "display": "flex",
-          "align-items": "center",
-          "justify-content": "center"
-      }
-  }
+page_content = Markdown("""
+# Matplotlib 2D Scatter Plot
+<|{content}|image|class_name=scatter-plot|>
+""",style={
+    ".scatter-plot": {
+        "display": "block",
+        "margin": "auto",
+        "max-width": "100% !important",  # Ensures the image does not overflow
+        "width": "1000px !important",   # Sets the width to the intrinsic size with higher priority
+        "height": "520px !important" 
+    }
+}
 )
 
 if __name__ == "__main__":
-    Gui(page, style="style").run(title="Chart-Scatter-Matplotlib")
+    Gui(page_content).run(title="Chart-Scatter-Matplotlib")
