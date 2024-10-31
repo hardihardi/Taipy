@@ -35,10 +35,10 @@ with tgb.Page(
             }
         }
 ) as page:
-    tgb.text(value="# Taipy Example for Matplotlib Integration", mode="md")
+    tgb.html("h1", "Taipy Example for Matplotlib Integration")
     tgb.part(content="{fig}", class_name = "matplotlib_example")
 
 
 # Run the Taipy Application:
 if __name__ == "__main__":
-    Gui(page=page).run(title="Matplotlib Example")
+    Gui(page).run(title="Matplotlib Example")

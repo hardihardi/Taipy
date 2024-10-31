@@ -27,7 +27,7 @@ xx = np.arange(0, 2 * np.pi, 0.01)
 plot = fig.subplots(1, 1)
 plot.fill(xx, np.sin(xx), facecolor="none", edgecolor="purple", linewidth=2)
 
-page_content = Markdown("""
+page = Markdown("""
 # Taipy Example for Matplotlib Integration
 <|part|content={fig}|class_name=matplotlib_example|>
 """,style={
@@ -40,4 +40,4 @@ page_content = Markdown("""
 
 # Run the Taipy Application:
 if __name__ == "__main__":
-    Gui(page_content).run(title="Matplotlib Example")
+    Gui(page).run(title="Matplotlib Example")
