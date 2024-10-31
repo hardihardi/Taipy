@@ -1023,7 +1023,7 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                                     </>
                                                 ) : dtType === "json" ? (
                                                     <>
-                                                    <Suspense>
+                                                    <Suspense fallback={<div>Loading JSON...</div>}>
                                                         <Grid container spacing={2}>
                                                             <Grid xs={12}>
                                                                 <Typography variant="subtitle2">JSON Data</Typography>
