@@ -27,7 +27,7 @@ colors = [30, 40, 50, 60, 70]  # Bubble color values that will be mapped to shad
 # Scatter plot
 # The `c` parameter uses the `colors` list to map values to the colormap (cmap)
 # The `edgecolors` parameter sets the color of the edges around the bubbles
-plt.scatter(x, y, s=sizes, c=colors, cmap='Greens', edgecolors='black', linewidths=1) # scatter plot
+plt.scatter(x, y, s=sizes, c=colors, cmap='Greens', edgecolors='black', linewidths=1)
 plt.xlabel('X-axis')
 plt.ylabel('Y-axis')
 plt.title('Matplotlib 2D Scatter Plot')
