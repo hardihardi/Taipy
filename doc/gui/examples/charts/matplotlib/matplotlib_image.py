@@ -17,7 +17,6 @@
 from taipy.gui import Gui, Markdown
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 
 # Define data
 employee_performance = [2, 3.5, 2, 3.5, 3, 4]
