@@ -1020,23 +1020,6 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                                             </Tooltip>
                                                         </Grid>
                                                     </>
-                                                ) : dtType === "json" ? (
-                                                    <>
-                                                    <Suspense fallback={<div>Loading JSON...</div>}>
-                                                        <Grid container spacing={2}>
-                                                            <Grid size={12}>
-                                                                <Typography variant="subtitle2">JSON Data</Typography>
-                                                            </Grid>
-                                                            <Grid size={12}>
-                                                                <JSONTree
-                                                                    data={dtValue}
-                                                                    hideRoot={true}
-                                                                    shouldExpandNode={() => false}
-                                                                />
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Suspense>
-                                                    </>
                                                 ) : dtType == "date" &&
                                                   (dataValue === null || dataValue instanceof Date) ? (
                                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -1130,6 +1113,14 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                                             disabled={true}
                                                             title={`${dtValue}`}
                                                         />
+                                                    ) : dtType === "json" ? (
+                                                        <Suspense fallback={<div>Loading JSON...</div>}>
+                                                            <JSONTree
+                                                                data={dtValue}
+                                                                shouldExpandNode={() => true}
+                                                                hideRoot={true}
+                                                            />
+                                                        </Suspense>
                                                     ) : (
                                                         <Typography variant="subtitle2">
                                                             {dtType == "date"
