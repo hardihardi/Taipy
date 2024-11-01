@@ -36,13 +36,13 @@ from taipy.core import (
 )
 from taipy.core import get as core_get
 from taipy.core.config import Config
+from taipy.core.data import JSONDataNode
 from taipy.core.data._file_datanode_mixin import _FileDataNodeMixin
 from taipy.core.data._tabular_datanode_mixin import _TabularDataNodeMixin
 from taipy.core.reason import ReasonCollection
 from taipy.gui._warnings import _warn
 from taipy.gui.gui import _DoNotUpdate
 from taipy.gui.utils import _is_boolean, _is_true, _TaipyBase
-from taipy.core.data import JSONDataNode
 
 from .filters import DataNodeFilter, ScenarioFilter, _Filter
 
