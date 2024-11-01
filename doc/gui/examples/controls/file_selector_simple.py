@@ -13,21 +13,12 @@
 # Python environment and run:
 #     python <script>
 # -----------------------------------------------------------------------------------------
-import taipy.gui.builder as tgb
-from taipy.gui import Gui, State
+from taipy.gui import Gui
 
 filename = "<unknown>"
 
-
-def print_filename(state: State):
-    print("filename is ", state.filename)  # noqa: T201
-
-def on_change(state: State, var: str, val: str):
-    print(f"on_change(state: State, var: {var}, val: {val})")  # noqa: T201
-
-with tgb.Page() as page:
-    tgb.file_selector("{filename}", on_action=print_filename)
-    tgb.text("selected File: {filename}")
-
+page = """<|{filename}|file_selector|>
+<|selected File: {filename}|>
+"""
 if __name__ == "__main__":
     Gui(page).run(title="File Selector - Simple")

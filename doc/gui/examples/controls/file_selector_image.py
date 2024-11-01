@@ -23,7 +23,8 @@ path = ""
 image = None
 
 page = """
-<|{path}|file_selector|on_action=upload|extensions=png,jpg|> <|{image}|image|>
+<|{path}|file_selector|on_action=upload|extensions=png,jpg|>
+<|{image}|image|>
 """
 
 def upload(state: State):
