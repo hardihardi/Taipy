@@ -99,7 +99,7 @@ import DataNodeTable from "./DataNodeTable";
 
 const JsonViewer = lazy(() => import("@textea/json-viewer").then(module => ({ default: module.JsonViewer })));
 
-const editTimestampFormat = "YYY/MM/dd HH:mm";
+const editTimestampFormat = "yyyy/MM/dd HH:mm";
 
 const tabBoxSx = { borderBottom: 1, borderColor: "divider" };
 const noDisplay = { display: "none" };
