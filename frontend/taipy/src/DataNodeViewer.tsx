@@ -96,7 +96,8 @@ import CoreSelector from "./CoreSelector";
 import { useUniqueId } from "./utils/hooks";
 import DataNodeChart from "./DataNodeChart";
 import DataNodeTable from "./DataNodeTable";
-import LazyJsonViewer from "./utils/LazyJsonViewer";
+
+const JsonViewer = lazy(() => import("@textea/json-viewer").then(module => ({ default: module.JsonViewer })));
 
 const editTimestampFormat = "YYY/MM/dd HH:mm";
 
@@ -1119,9 +1120,11 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                                                 <Typography variant="subtitle2">JSON Data</Typography>
                                                             </Grid>
                                                             <Grid size={12}>
-                                                                <LazyJsonViewer value={dtValue} collapsed={true} />
+                                                                <Suspense fallback={<div>Loading JSON Viewer...</div>}>
+                                                                    <JsonViewer value={dtValue} collapsed={1} groupArraysAfterLength={5} />
+                                                                </Suspense>
                                                             </Grid>
-                                                        </Grid>
+                                                        </Grid> 
                                                     ) : (
                                                         <Typography variant="subtitle2">
                                                             {dtType == "date"
