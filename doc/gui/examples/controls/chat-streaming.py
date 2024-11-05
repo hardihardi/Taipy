@@ -44,11 +44,13 @@ users = [
 ]
 
 
+# user state initialization
 def on_init(state: State):
     # Do not share the message list with other users
     state.messages = []
 
 
+# add an image if one is present in the wikipedia returned json
 def add_image_to_message(state: State, idx: int, text: str, image_url: str):
     msg_content: str = state.messages[idx][1]
     pos = msg_content.find(text)
@@ -57,9 +59,10 @@ def add_image_to_message(state: State, idx: int, text: str, image_url: str):
         set_message(state, msg_content, idx)
 
 
+# invoked by update_message through a thread
 def update_message_with_image(gui: Gui, state_id: str, message_idx: int, text: str, image: dict):
     if src := image.get("source"):
-        time.sleep(0.2)
+        time.sleep(0.2) # to show the streaming effect
         invoke_callback(
             gui,
             state_id,
@@ -68,28 +71,31 @@ def update_message_with_image(gui: Gui, state_id: str, message_idx: int, text: s
         )
 
 
+# invoked by request_wikipedia
 def update_message(state: State, json, event_type: str, for_date: str, idx: int):
     if isinstance(json, dict):
-        # response header
+        # response initial message
         set_message(state, f"{event_type} for {for_date}: \n", idx)
 
         for event in json.get(event_type, []):
-            time.sleep(0.2)
+            time.sleep(0.2) # to show the streaming effect
             # update response
             append_to_message(state, f"\n* {event.get('year', '')}: {event.get('text', '')}", idx)
+            # invoke update_message_with_image in a thread
             invoke_long_callback(
                 state=state,
                 user_function=update_message_with_image,
                 user_function_args=[
-                    gui,
+                    state.get_gui(),
                     get_state_id(state),
                     idx,
                     event.get("text", ""),
-                    event.get("pages", [{}])[0].get("thumbnail", {}),
+                    pages[0].get("thumbnail", {}) if (pages := event.get("pages", [])) and len(pages) else {},
                 ],
             )
 
 
+# set or append a message returning its index in the list
 def set_message(state: State, message: str, idx: t.Optional[int] = None):
     if idx is not None and idx < len(state.messages):
         msg = state.messages[idx]
@@ -101,6 +107,7 @@ def set_message(state: State, message: str, idx: t.Optional[int] = None):
     return idx
 
 
+# append to an existing message
 def append_to_message(state: State, message: str, idx: int):
     if idx < len(state.messages):
         msg = state.messages[idx]
@@ -109,7 +116,9 @@ def append_to_message(state: State, message: str, idx: int):
     return idx
 
 
+# request the wikipedia API, invoked by send_message
 def request_wikipedia(gui: Gui, state_id: str, event_type: str, month: str, day: str):
+    # inform the user a request is posted
     idx = invoke_callback(
         gui,
         state_id,
@@ -118,6 +127,7 @@ def request_wikipedia(gui: Gui, state_id: str, event_type: str, month: str, day:
     )
     request = wiki_url.format(type=event_type, month=month, day=day)
     req = requests.get(request, headers={"accept": "application/json; charset=utf-8;", "User-Agent": user_agent})
+    # handle the response
     if req.status_code == 200:
         # display response
         invoke_callback(
@@ -127,6 +137,7 @@ def request_wikipedia(gui: Gui, state_id: str, event_type: str, month: str, day:
             [req.json(), event_type, f"{day}/{month}", idx],
         )
     else:
+        # display error
         invoke_callback(
             gui,
             state_id,
@@ -135,6 +146,7 @@ def request_wikipedia(gui: Gui, state_id: str, event_type: str, month: str, day:
         )
 
 
+# invoked by the on_action on the chat control when the user press the send button
 def send_message(state: State, id: str, payload: dict):
     args = payload.get("args", [])
 
@@ -168,13 +180,13 @@ def send_message(state: State, id: str, payload: dict):
     invoke_long_callback(
         state=state,
         user_function=request_wikipedia,
-        user_function_args=[gui, get_state_id(state), type_event, month, day],
+        user_function_args=[state.get_gui(), get_state_id(state), type_event, month, day],
     )
 
 
-if __name__ == "__main__":
-    page = """
+page = """
 <|{messages}|chat|users={users}|on_action=send_message|height=80vh|>
 """
-    gui = Gui(page)
-    gui.run(title="Chat- Streaming Wikipedia")
+
+if __name__ == "__main__":
+    Gui(page).run(title="Chat- Streaming Wikipedia")
