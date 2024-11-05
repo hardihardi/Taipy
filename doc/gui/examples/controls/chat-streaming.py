@@ -34,35 +34,34 @@ event_types = {
 }
 user_agent = "https://taipy.io/demo"
 
-# the list of messages
+# The list of messages
 messages: list[tuple[str, str, str]] = []  # (Message id, message, sender)
 
-# the users
+# The two users of this app
 users = [
     ["wikipedia", Icon("https://www.wikipedia.org/static/apple-touch/wikipedia.png", "Wikipedia")],
     ["taipy", Icon("https://docs.taipy.io/en/latest/assets/images/favicon.png", "Taipy")],
 ]
 
 
-# user state initialization
+# Initialize the user state
 def on_init(state: State):
-    # Do not share the message list with other users
+    #  Messages are for this user only
     state.messages = []
 
 
-# add an image if one is present in the wikipedia returned json
+# Add the image if there is one in the Wikipedia returned data
 def add_image_to_message(state: State, idx: int, text: str, image_url: str):
     msg_content: str = state.messages[idx][1]
-    pos = msg_content.find(text)
-    if pos > -1:
+    if (pos := msg_content.find(text)) > -1:
         msg_content = msg_content[: pos + len(text)] + f"\n\n![{text}]({image_url})" + msg_content[pos + len(text) :]
         set_message(state, msg_content, idx)
 
 
-# invoked by update_message through a thread
+# Invoked by update_message through a thread
 def update_message_with_image(gui: Gui, state_id: str, message_idx: int, text: str, image: dict):
     if src := image.get("source"):
-        time.sleep(0.2) # to show the streaming effect
+        time.sleep(0.2) # Apply the typewriter effect
         invoke_callback(
             gui,
             state_id,
@@ -71,17 +70,17 @@ def update_message_with_image(gui: Gui, state_id: str, message_idx: int, text: s
         )
 
 
-# invoked by request_wikipedia
+# Invoked by query_wikipedia()
 def update_message(state: State, json, event_type: str, for_date: str, idx: int):
     if isinstance(json, dict):
-        # response initial message
-        set_message(state, f"{event_type} for {for_date}: \n", idx)
+        # Initial response content
+        set_message(state, f"{event_type} for {for_date}:\n", idx)
 
         for event in json.get(event_type, []):
-            time.sleep(0.2) # to show the streaming effect
-            # update response
+            time.sleep(0.2) # Apply the typewriter effect
+            # Update response text
             append_to_message(state, f"\n* {event.get('year', '')}: {event.get('text', '')}", idx)
-            # invoke update_message_with_image in a thread
+            # Invoke update_message_with_image() in a separated thread
             invoke_long_callback(
                 state=state,
                 user_function=update_message_with_image,
@@ -95,7 +94,8 @@ def update_message(state: State, json, event_type: str, for_date: str, idx: int)
             )
 
 
-# set or append a message returning its index in the list
+# Set a new message or append to an existing message.
+# Return the message index in the list.
 def set_message(state: State, message: str, idx: t.Optional[int] = None):
     if idx is not None and idx < len(state.messages):
         msg = state.messages[idx]
@@ -107,7 +107,7 @@ def set_message(state: State, message: str, idx: t.Optional[int] = None):
     return idx
 
 
-# append to an existing message
+# Append text to an existing message
 def append_to_message(state: State, message: str, idx: int):
     if idx < len(state.messages):
         msg = state.messages[idx]
@@ -116,20 +116,20 @@ def append_to_message(state: State, message: str, idx: int):
     return idx
 
 
-# request the wikipedia API, invoked by send_message
+# Invoke the Wikipedia API. This is invoked by send_message()
 def request_wikipedia(gui: Gui, state_id: str, event_type: str, month: str, day: str):
-    # inform the user a request is posted
+    # Let the user known that a query was sent
     idx = invoke_callback(
         gui,
         state_id,
         set_message,
-        ["requesting Wikipedia ..."],
+        ["Fetching information from Wikipedia ..."],
     )
     request = wiki_url.format(type=event_type, month=month, day=day)
     req = requests.get(request, headers={"accept": "application/json; charset=utf-8;", "User-Agent": user_agent})
-    # handle the response
+    # Handle the response
     if req.status_code == 200:
-        # display response
+        # Display the response
         invoke_callback(
             gui,
             state_id,
@@ -137,24 +137,24 @@ def request_wikipedia(gui: Gui, state_id: str, event_type: str, month: str, day:
             [req.json(), event_type, f"{day}/{month}", idx],
         )
     else:
-        # display error
+        # Display the error
         invoke_callback(
             gui,
             state_id,
             set_message,
-            [f"requesting Wikipedia failed: {req.status_code}", idx],
+            [f"Wikipedia API call failed: {req.status_code}", idx],
         )
 
 
-# invoked by the on_action on the chat control when the user press the send button
+# Invoked by the 'on_action' callback of the chat control when the user presses the Send button
 def send_message(state: State, id: str, payload: dict):
     args = payload.get("args", [])
 
-    # display request
+    # Display the request
     state.messages.append((f"{len(state.messages)}", args[2], args[3]))
     state.refresh("messages")
 
-    # analyse request
+    # Analyse the request
     request = args[2].lower()
     type_event = None
     for word in event_types:
@@ -176,7 +176,7 @@ def send_message(state: State, id: str, payload: dict):
     if day is None:
         day = f"{datetime.datetime.now().day}"
 
-    # process request
+    # Process the request
     invoke_long_callback(
         state=state,
         user_function=request_wikipedia,
@@ -189,4 +189,4 @@ page = """
 """
 
 if __name__ == "__main__":
-    Gui(page).run(title="Chat- Streaming Wikipedia")
+    Gui(page).run(title="Chat - Ask Wikipedia")
