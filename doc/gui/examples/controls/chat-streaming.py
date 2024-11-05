@@ -20,7 +20,6 @@ import typing as t
 
 import requests  # type: ignore[import-untyped]
 
-import taipy.gui.builder as tgb
 from taipy.gui import Gui, Icon, State, get_state_id, invoke_callback, invoke_long_callback
 
 # The Wikipedia API used to generate content for a date
