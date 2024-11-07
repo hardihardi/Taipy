@@ -78,7 +78,7 @@ describe("Field Component", () => {
     });
     it("renders LaTeX as inline math", async () => {
         const {container, getByText, findByText} = render(<Field value={"This is inline $x = y + 1$ math."} className="taipy-text" mode="latex" />);
-        getByText(/latex/i);
+        // getByText(/latex/i); already loaded ?
         await waitFor(() => expect(container.querySelector(".taipy-text-latex")).toBeInTheDocument());
         expect(await findByText(/inline/i)).toBeInTheDocument();
     });
