@@ -19,11 +19,11 @@ page = """
 <|layout|columns=max-content max-content|
 
 <|card|part|
-Metric 1
+France
 |>
 
 <|card|part|
-Metric 2
+United States of America
 |>
 
 |>

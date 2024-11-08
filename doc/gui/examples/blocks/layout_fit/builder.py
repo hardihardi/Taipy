@@ -19,9 +19,9 @@ from taipy.gui import Gui
 with tgb.Page() as page:
     with tgb.layout("max-content max-content"):  # type: ignore[attr-defined]
         with tgb.part("card"):  # type: ignore[attr-defined]
-            tgb.text("Metric 1")  # type: ignore[attr-defined]
+            tgb.text("France")  # type: ignore[attr-defined]
         with tgb.part("card"):  # type: ignore[attr-defined]
-            tgb.text("Metric 2")  # type: ignore[attr-defined]
+            tgb.text("United States of America")  # type: ignore[attr-defined]
 
 if __name__ == "__main__":
     Gui(page).run(title="layout - fit content")
