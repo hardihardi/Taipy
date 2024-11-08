@@ -10,7 +10,6 @@ json_config_node = Config.configure_json_data_node(
 )
 
 with tgb.Page() as data_node_viewer:
-    tgb.html("h2", "Discovering Data Node JSON Viewer")
     tgb.data_node(
         data_node="{json_data_node}"
     )
@@ -20,4 +19,4 @@ gui = Gui(page=data_node_viewer)
 if __name__ == "__main__":
     Orchestrator().run()
     json_data_node = tp.create_global_data_node(json_config_node)
-    gui.run(title="1248 JSON Data Node")
+    gui.run(title="Datanode Viewer - json support")

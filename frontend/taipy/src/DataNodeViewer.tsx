@@ -96,6 +96,7 @@ import CoreSelector from "./CoreSelector";
 import { useUniqueId } from "./utils/hooks";
 import DataNodeChart from "./DataNodeChart";
 import DataNodeTable from "./DataNodeTable";
+import { useTheme } from "@mui/material/styles";
 
 const JsonViewer = lazy(() => import("@textea/json-viewer").then(module => ({ default: module.JsonViewer })));
 
@@ -285,6 +286,8 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
     const dtValue = dnData[DatanodeDataProps.value] ?? (dtType == "float" ? null : undefined);
     const dtTabular = dnData[DatanodeDataProps.tabular] ?? false;
     const dtError = dnData[DatanodeDataProps.error];
+
+    const theme = useTheme();
 
     // Tabs
     const [tabValue, setTabValue] = useState<TabValues | undefined>(
@@ -992,7 +995,7 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                         size={12}
                                         justifyContent="space-between"
                                         data-focus={dataValueFocus}
-                                        onClick={onFocus}
+                                        onClick={dtType === "dict" ? undefined : onFocus}
                                         sx={hoverSx}
                                     >
                                         {active &&
@@ -1125,7 +1128,7 @@ const DataNodeViewer = (props: DataNodeViewerProps) => {
                                                         />
                                                     ) : dtType === "dict" ? (
                                                         <Suspense fallback={<div>Loading JSON Viewer...</div>}>
-                                                            <JsonViewer value={dtValue} collapsed={true} />
+                                                            <JsonViewer value={dtValue} collapsed={true} theme={theme.palette.mode} />
                                                         </Suspense>
                                                     ) : (
                                                         <Typography variant="subtitle2">
