@@ -33,6 +33,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { ColumnDesc, defaultDateFormat, getSortByIndex, iconInRowSx, FilterDesc } from "./tableUtils";
 import { getDateTime, getTypeFromDf } from "../../utils";
 import { getSuffixedClassNames } from "./utils";
+import { MatchCase } from "../icons/MatchCase";
 
 interface TableFilterProps {
     columns: Record<string, ColumnDesc>;
@@ -92,7 +93,13 @@ const getActionsByType = (colType?: string) =>
     (colType && colType in actionsByType && actionsByType[colType]) ||
     (colType === "any" ? { ...actionsByType.string, ...actionsByType.number } : actionsByType.string);
 
-const getFilterDesc = (columns: Record<string, ColumnDesc>, colId?: string, act?: string, val?: string) => {
+const getFilterDesc = (
+    columns: Record<string, ColumnDesc>,
+    colId?: string,
+    act?: string,
+    val?: string,
+    matchCase?: boolean
+) => {
     if (colId && act && val !== undefined) {
         const colType = getTypeFromDf(columns[colId].type);
         if (val === "" && (colType === "date" || colType === "number" || colType === "boolean")) {
@@ -113,6 +120,7 @@ const getFilterDesc = (columns: Record<string, ColumnDesc>, colId?: string, act?
                             : val
                         : val,
                 type: colType,
+                matchCase: !!matchCase,
             } as FilterDesc;
         } catch (e) {
             console.info("could not parse value ", val, e);
@@ -126,8 +134,14 @@ const FilterRow = (props: FilterRowProps) => {
     const [colId, setColId] = useState<string>("");
     const [action, setAction] = useState<string>("");
     const [val, setVal] = useState<string>("");
+    const [matchCase, setMatchCase] = useState<boolean>(false);
     const [enableCheck, setEnableCheck] = useState(false);
     const [enableDel, setEnableDel] = useState(false);
+
+    // Function to handle case-sensitivity toggle
+    const toggleMatchCase = useCallback(() => {
+        setMatchCase((prev) => !prev);
+    }, []);
 
     const onColSelect = useCallback(
         (e: SelectChangeEvent<string>) => {
@@ -136,6 +150,7 @@ const FilterRow = (props: FilterRowProps) => {
         },
         [columns, action, val]
     );
+
     const onActSelect = useCallback(
         (e: SelectChangeEvent<string>) => {
             setAction(e.target.value);
@@ -143,6 +158,7 @@ const FilterRow = (props: FilterRowProps) => {
         },
         [columns, colId, val]
     );
+
     const onValueChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             setVal(e.target.value);
@@ -150,13 +166,16 @@ const FilterRow = (props: FilterRowProps) => {
         },
         [columns, colId, action]
     );
+
     const onValueAutoComp = useCallback(
         (e: SyntheticEvent, value: string | null) => {
-            setVal(value || "");
-            setEnableCheck(!!getFilterDesc(columns, colId, action, value || ""));
+            const inputValue = value || "";
+            setVal(inputValue);
+            setEnableCheck(!!getFilterDesc(columns, colId, action, inputValue));
         },
         [columns, colId, action]
     );
+
     const onValueSelect = useCallback(
         (e: SelectChangeEvent<string>) => {
             setVal(e.target.value);
@@ -164,6 +183,7 @@ const FilterRow = (props: FilterRowProps) => {
         },
         [columns, colId, action]
     );
+
     const onDateChange = useCallback(
         (v: Date | null) => {
             const dv = !(v instanceof Date) || isNaN(v.valueOf()) ? "" : v.toISOString();
@@ -174,10 +194,11 @@ const FilterRow = (props: FilterRowProps) => {
     );
 
     const onDeleteClick = useCallback(() => setFilter(idx, undefined as unknown as FilterDesc, true), [idx, setFilter]);
+
     const onCheckClick = useCallback(() => {
-        const fd = getFilterDesc(columns, colId, action, val);
+        const fd = getFilterDesc(columns, colId, action, val, matchCase);
         fd && setFilter(idx, fd);
-    }, [idx, setFilter, columns, colId, action, val]);
+    }, [idx, setFilter, columns, colId, action, val, matchCase]);
 
     useEffect(() => {
         if (filter && idx > -1) {
@@ -280,9 +301,21 @@ const FilterRow = (props: FilterRowProps) => {
                         onChange={onValueChange}
                         label={`${val ? "" : "Empty "}String`}
                         margin="dense"
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <Tooltip title={matchCase ? "Case sensitive" : "Case insensitive"}>
+                                        <IconButton onClick={toggleMatchCase} size="small">
+                                            <MatchCase color={matchCase ? "primary" : "disabled"} />
+                                        </IconButton>
+                                    </Tooltip>
+                                ),
+                            },
+                        }}
                     />
                 )}
             </Grid>
+
             <Grid size={1}>
                 <Tooltip title="Validate">
                     <span>

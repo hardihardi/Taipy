@@ -47,6 +47,22 @@ import { TaipyActiveProps, TaipyMultiSelectProps, getSuffixedClassNames } from "
 /**
  * A column description as received by the backend.
  */
+
+/**
+ * Generates a  CSS class name for a table header.
+ * @param columnName - The name of the column.
+ * @returns for CSS class name.
+ */
+
+export const generateHeaderClassName = (columnName: string | undefined): string => {
+    // logic for the css header classname
+    if (!columnName){
+        // return an empty string if columname is undefined or empty
+        return "";
+    }
+    return '-' + columnName.replace(/\W+/g, '-').replace(/-+/g, '-').toLowerCase();
+};
+
 export interface ColumnDesc {
     /** The unique column identifier. */
     dfid: string;
@@ -206,6 +222,7 @@ export interface FilterDesc {
     action: string;
     value: string | number | boolean | Date;
     type: string;
+    matchcase?: boolean;
 }
 
 export const defaultColumns = {} as Record<string, ColumnDesc>;
@@ -304,7 +321,7 @@ export const getPageKey = (
         order,
         aggregates?.length
             ? cols.reduce((pv, col, idx) => {
-                  if (aggregates.includes(columns[col].dfid)) {
+                  if (aggregates.includes(col)) {
                       return `${pv}${idx}`;
                   }
                   return pv;

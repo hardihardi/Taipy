@@ -40,8 +40,10 @@ import Selector from "./Selector";
 import Slider from "./Slider";
 import StatusList from "./StatusList";
 import Table from "./Table";
+import TaipyAlert from "./Alert";
 import TaipyStyle from "./TaipyStyle";
 import Toggle from "./Toggle";
+import TimeSelector from "./TimeSelector";
 import TreeView from "./TreeView";
 
 const registeredComponents: Record<string, ComponentType> = {};
@@ -50,6 +52,7 @@ export const getRegisteredComponents = () => {
     if (registeredComponents.TreeView === undefined) {
         Object.entries({
             a: Link,
+            Alert: TaipyAlert,
             Button,
             Chat,
             Chart,
@@ -76,10 +79,11 @@ export const getRegisteredComponents = () => {
             Status: StatusList,
             Table,
             TaipyStyle,
+            TimeSelector,
             Toggle,
             TreeView,
             Progress,
-        }).forEach(([name, comp]) => (registeredComponents[name] = comp  as ComponentType));
+        }).forEach(([name, comp]) => (registeredComponents[name] = comp as ComponentType));
         if (window.taipyConfig?.extensions) {
             Object.entries(window.taipyConfig.extensions).forEach(([libName, elements]) => {
                 if (elements && elements.length) {

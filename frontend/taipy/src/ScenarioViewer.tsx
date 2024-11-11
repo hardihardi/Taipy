@@ -42,6 +42,7 @@ import {
     createSendActionNameAction,
     getComponentClassName,
     getUpdateVar,
+    useClassNames,
     useDispatch,
     useDynamicProperty,
     useModule,
@@ -60,7 +61,6 @@ import {
     ScenarioFullLength,
     disableColor,
     hoverSx,
-    useClassNames,
 } from "./utils";
 import ConfirmDialog from "./utils/ConfirmDialog";
 import PropertiesEditor from "./PropertiesEditor";
@@ -404,6 +404,7 @@ const ScenarioViewer = (props: ScenarioViewerProps) => {
                     id,
                     module,
                     { action: props.onDelete, error_id: getUpdateVar(updateScVars, "error_id") },
+                    undefined,
                     undefined,
                     undefined,
                     true,
