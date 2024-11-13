@@ -124,8 +124,7 @@ class CSVDataNode(DataNode, _FileDataNodeMixin, _TabularDataNodeMixin):
             editor_id (str): An optional identifier of the writer.
         """
         self._write(data, columns)
-        timestamp = datetime.now()
-        self.track_edit(editor_id=editor_id, timestamp=timestamp)
+        self.track_edit(editor_id=editor_id, timestamp=datetime.now())
 
     def _read(self):
         return self._read_from_path()
