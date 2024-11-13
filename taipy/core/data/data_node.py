@@ -33,7 +33,7 @@ from ..job.job_id import JobId
 from ..notification.event import Event, EventEntityType, EventOperation, _make_event
 from ..reason import DataNodeEditInProgress, DataNodeIsNotWritten
 from ._filter import _FilterDataNode
-from .data_node_id import DataNodeId, Edit, EDIT_COMMENT_KEY, EDIT_TIMESTAMP_KEY, EDIT_EDITOR_ID_KEY, EDIT_JOB_ID_KEY
+from .data_node_id import EDIT_COMMENT_KEY, EDIT_EDITOR_ID_KEY, EDIT_JOB_ID_KEY, EDIT_TIMESTAMP_KEY, DataNodeId, Edit
 from .operator import JoinOperator
 
 
@@ -199,6 +199,11 @@ class DataNode(_Entity, _Labeled):
         Additional metadata related to the edition made to the data node can also be provided in Edits.
         """
         return self._edits
+
+    @edits.setter  # type: ignore
+    @_self_setter(_MANAGER_NAME)
+    def edits(self, val):
+        self._edits = val
 
     @property  # type: ignore
     @_self_reload(_MANAGER_NAME)
@@ -475,6 +480,7 @@ class DataNode(_Entity, _Labeled):
         edit[EDIT_TIMESTAMP_KEY] = timestamp
         self.last_edit_date = edit.get(EDIT_TIMESTAMP_KEY)
         self._edits.append(edit) # type: ignore
+        self.edits = self._edits
 
     def lock_edit(self, editor_id: Optional[str] = None):
         """Lock the data node modification.

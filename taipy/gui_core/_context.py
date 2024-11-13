@@ -53,7 +53,6 @@ from taipy.core import get as core_get
 from taipy.core import submit as core_submit
 from taipy.core.data._file_datanode_mixin import _FileDataNodeMixin
 from taipy.core.data.data_node_id import EDIT_COMMENT_KEY, EDIT_EDITOR_ID_KEY, EDIT_JOB_ID_KEY, EDIT_TIMESTAMP_KEY
-
 from taipy.core.notification import CoreEventConsumerBase, EventEntityType
 from taipy.core.notification.event import Event, EventOperation
 from taipy.core.notification.notifier import Notifier
