@@ -18,7 +18,6 @@ import os
 import matplotlib.pyplot as plt
 from taipy.gui import Gui, Markdown
 
-
 # Generate a scatter plot
 x = [1, 2, 3, 4, 5]  # x axis values
 y = [10, 14, 12, 15, 18]  # y axis values
