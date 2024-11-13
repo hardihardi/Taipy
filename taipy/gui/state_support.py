@@ -9,24 +9,8 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
-from abc import abstractmethod
-from typing import Type
-
-from taipy.common.config import Config
-
-from ._manager import _Manager
+from .state import State
 
 
-class _ManagerFactory:
-    @classmethod
-    @abstractmethod
-    def _build_manager(cls) -> Type[_Manager]:
-        raise NotImplementedError
-
-    @classmethod
-    def _build_repository(cls):
-        raise NotImplementedError
-
-    @staticmethod
-    def _get_repository_with_repo_map(repository_map: dict):
-        return repository_map.get(Config.core.repository_type, repository_map.get("default"))
+class StateSupport(State):
+    pass
