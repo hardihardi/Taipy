@@ -37,7 +37,7 @@ runs:
         cache-dependency-path: 'Pipfile'
 
     - name: Install pipenv
-      run: pip install pipenv==2024.3.1
+      run: pip install pipenv --upgrade
       shell: bash
 
     - name: Install pipenv dependencies
