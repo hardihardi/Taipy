@@ -420,13 +420,13 @@ class DataNode(_Entity, _Labeled):
             )
             return None
 
-    def append(self, data, editor_id: Optional[str] = None, **kwargs: Dict[str, Any]):
+    def append(self, data, editor_id: Optional[str] = None, **kwargs: Any):
         """Append some data to this data node.
 
         Arguments:
             data (Any): The data to write to this data node.
             editor_id (str): An optional identifier of the editor.
-            **kwargs (dict[str, any]): Extra information to attach to the edit document
+            **kwargs (Any): Extra information to attach to the edit document
                 corresponding to this write.
         """
         from ._data_manager_factory import _DataManagerFactory
@@ -436,13 +436,13 @@ class DataNode(_Entity, _Labeled):
         self.unlock_edit()
         _DataManagerFactory._build_manager()._set(self)
 
-    def write(self, data, job_id: Optional[JobId] = None, **kwargs: Dict[str, Any]):
+    def write(self, data, job_id: Optional[JobId] = None, **kwargs: Any):
         """Write some data to this data node.
 
         Arguments:
             data (Any): The data to write to this data node.
             job_id (JobId): An optional identifier of the job writing the data.
-            **kwargs (dict[str, any]): Extra information to attach to the edit document
+            **kwargs (Any): Extra information to attach to the edit document
                 corresponding to this write.
         """
         from ._data_manager_factory import _DataManagerFactory
@@ -457,7 +457,7 @@ class DataNode(_Entity, _Labeled):
                    editor_id: Optional[str] = None,
                    timestamp: Optional[datetime] = None,
                    comment: Optional[str] = None,
-                   **options: Dict[str, Any]):
+                   **options: Any):
         """Creates and adds a new entry in the edits attribute without writing the data.
 
         Arguments:
@@ -466,7 +466,7 @@ class DataNode(_Entity, _Labeled):
             timestamp (Optional[datetime]): The optional timestamp of the edit. If not provided, the
                 current time is used.
             comment (Optional[str]): The optional comment of the edit.
-            options (dict[str, any]): User-custom attributes to attach to the edit.
+            **options (Any): User-custom attributes to attach to the edit.
         """
         edit: Dict[str, Any] = {k: v for k, v in options.items() if v is not None}
         if job_id:
