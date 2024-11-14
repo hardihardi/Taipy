@@ -27,13 +27,6 @@ def test_toggle_allow_unselected_builder(gui: Gui, helpers):
     helpers.test_control_builder(gui, page, expected_list)
 
 
-def test_toggle_allow_unselected_with_value_builder(gui: Gui, helpers):
-    with tgb.Page(frame=None) as page:
-        tgb.toggle(allow_unselect=True, lov="1;2", unselected_value="uv")  # type: ignore[attr-defined]
-    expected_list = ["<Toggle", "allowUnselect={true}", 'unselectedValue="uv"']
-    helpers.test_control_builder(gui, page, expected_list)
-
-
 def test_toggle_lov_builder(gui: Gui, test_client, helpers):
     gui._bind_var_val("x", "l1")
     gui._bind_var_val("lov", [("l1", "v1"), ("l2", "v2")])

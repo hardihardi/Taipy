@@ -33,7 +33,6 @@ const baseGroupSx = { verticalAlign: "middle" };
 interface ToggleProps extends LovProps<string> {
     style?: SxProps;
     label?: string;
-    unselectedValue?: string;
     allowUnselect?: boolean;
     mode?: string;
     isSwitch?: boolean;
@@ -49,7 +48,6 @@ const Toggle = (props: ToggleProps) => {
         propagate = true,
         lov,
         defaultLov = "",
-        unselectedValue = null,
         updateVars = "",
         valueById,
         mode = "",
@@ -85,7 +83,7 @@ const Toggle = (props: ToggleProps) => {
             dispatch(
                 createSendUpdateAction(
                     updateVarName,
-                    val === null ? unselectedValue : val,
+                    val,
                     module,
                     props.onChange,
                     propagate,
@@ -93,17 +91,7 @@ const Toggle = (props: ToggleProps) => {
                 )
             );
         },
-        [
-            unselectedValue,
-            updateVarName,
-            propagate,
-            dispatch,
-            updateVars,
-            valueById,
-            props.onChange,
-            props.allowUnselect,
-            module,
-        ]
+        [updateVarName, propagate, dispatch, updateVars, valueById, props.onChange, props.allowUnselect, module]
     );
 
     const changeSwitchValue = useCallback(

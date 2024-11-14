@@ -30,12 +30,6 @@ def test_toggle_allow_unselected_md(gui: Gui, helpers):
     helpers.test_control_md(gui, md_string, expected_list)
 
 
-def test_toggle_allow_unselected_with_value_md(gui: Gui, helpers):
-    md_string = "<|toggle|lov=1;2|allow_unselect|unselected_value=uv|>"
-    expected_list = ["<Toggle", "allowUnselect={true}", 'unselectedValue="uv"']
-    helpers.test_control_md(gui, md_string, expected_list)
-
-
 def test_toggle_lov_md(gui: Gui, test_client, helpers):
     gui._bind_var_val("x", "l1")
     gui._bind_var_val("lov", [("l1", "v1"), ("l2", "v2")])
