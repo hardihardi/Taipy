@@ -10,7 +10,7 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 from ..logger._taipy_logger import _TaipyLogger
 from ._config import _Config
@@ -24,8 +24,6 @@ from .common._config_blocker import _ConfigBlocker
 from .global_app.global_app_config import GlobalAppConfig
 from .section import Section
 from .unique_section import UniqueSection
-
-
 class Config:
     """Singleton class that manages the configuration of a Taipy application.
 
@@ -332,6 +330,26 @@ class Config:
     @classmethod
     def _from_json(cls, config_as_str: str) -> _Config:
         return cls.__json_serializer._deserialize(config_as_str)
+    
+    
+
+    @classmethod
+    def configure_rest(cls, port: int = 5000, host: str = "127.0.0.1", use_https: bool = False,
+                       ssl_cert: Optional[str] = None, ssl_key: Optional[str] = None):
+        # Import RestSection here to avoid circular import
+        from taipy.rest.rest_config import RestSection
+        if not hasattr(cls, '_rest_config'):
+            cls._rest_config = RestSection()
+        cls._rest_config.configure_rest(port, host, use_https, ssl_cert, ssl_key)
+
+    @property
+    def rest(cls):
+        # Import RestSection here to avoid circular import
+        from taipy.rest.rest_config import RestSection
+        if not hasattr(cls, '_rest_config'):
+            cls._rest_config = RestSection()
+        return cls._rest_config
+
 
 
 Config._override_env_file()

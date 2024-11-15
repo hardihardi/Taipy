@@ -19,8 +19,7 @@ class Rest:
     """
     Runnable Rest application serving REST APIs on top of Taipy Core functionalities.
     """
-
-    def __init__(self) -> None:
+    def __init__(self, port=None, host=None, use_https=None):
         """
         Initialize a REST API server.
 
@@ -36,12 +35,16 @@ class Rest:
         self._app: Flask = _create_app(
             Config.global_config.testing or False, Config.global_config.env, Config.global_config.secret_key
         )
+        self._port = port
+        self._host = host
+        self._use_https = use_https
 
-    def run(self, **kwargs):
-        """
-        Start a REST API server. This method is blocking.
-
-        Arguments:
-            **kwargs : Options to provide to the application server.
-        """
+    def run(self):
+        rest_config = Config.rest
+        kwargs = {
+            "port": self._port or rest_config.get("port", 5000),
+            "host": self._host or rest_config.get("host", "127.0.0.1"),
+            "ssl_context": (rest_config.get("ssl_cert"), rest_config.get("ssl_key")) if (self._use_https or rest_config.get("use_https", False)) else None
+        }
         self._app.run(**kwargs)
+
