@@ -34,7 +34,7 @@ interface ButtonProps extends TaipyActiveProps {
 const cardSx = { p: 0 };
 
 const Button = (props: ButtonProps) => {
-    const { id, onAction = "", defaultLabel, size="medium",variant="outlined" } = props;
+    const { id, onAction = "", defaultLabel, size = "medium", variant = "outlined" } = props;
     const [value, setValue] = useState<stringIcon>("");
     const dispatch = useDispatch();
     const module = useModule();
