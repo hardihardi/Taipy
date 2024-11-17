@@ -137,7 +137,7 @@ class _DataAccessors(object):
         """Unregisters a DataAccessor type."""
         if cls in self.__access_4_type:
             del self.__access_4_type[cls]
-        
+
     def __get_instance(self, value: _TaipyData) -> _DataAccessor:  # type: ignore
         value = value.get() if isinstance(value, _TaipyData) else value
         access = self.__access_4_type.get(type(value))

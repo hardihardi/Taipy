@@ -1,3 +1,6 @@
+import typing as t
+from unittest.mock import Mock
+
 from taipy.gui import Gui
 from taipy.gui.data.data_accessor import (
     _DataAccessor,
@@ -6,8 +9,6 @@ from taipy.gui.data.data_accessor import (
 )
 from taipy.gui.data.data_format import _DataFormat
 from taipy.gui.utils.types import _TaipyData
-from unittest.mock import Mock
-import typing as t
 
 
 class MyDataAccessor(_DataAccessor):
