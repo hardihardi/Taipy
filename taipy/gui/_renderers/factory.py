@@ -99,6 +99,8 @@ class _Factory:
                 ("active", PropertyType.dynamic_boolean, True),
                 ("hover_text", PropertyType.dynamic_string),
                 ("width", PropertyType.string_or_number),
+                ("size", PropertyType.string),
+                ("variant", PropertyType.string),
             ]
         ),
         "chat": lambda gui, control_type, attrs: _Builder(
@@ -263,6 +265,7 @@ class _Factory:
                 ("on_action", PropertyType.function),
                 ("active", PropertyType.dynamic_boolean, True),
                 ("multiple", PropertyType.boolean, False),
+                ("selection_type", PropertyType.string),
                 ("extensions",),
                 ("drop_message",),
                 ("hover_text", PropertyType.dynamic_string),
@@ -626,7 +629,6 @@ class _Factory:
                 ("hover_text", PropertyType.dynamic_string),
                 ("label",),
                 ("value_by_id", PropertyType.boolean),
-                ("unselected_value", PropertyType.string, ""),
                 ("allow_unselect", PropertyType.boolean),
                 ("on_change", PropertyType.function),
                 ("mode",),

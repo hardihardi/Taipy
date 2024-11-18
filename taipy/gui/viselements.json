@@ -53,6 +53,17 @@
                         "type": "dynamic(Union[str,Icon])",
                         "default_value": "\"\"",
                         "doc": "The label displayed in the button."
+                    },                                        {
+                    "name": "size",
+                        "type": "str",
+                        "default_value": "\"medium\"",
+                        "doc": "The size of the button. Valid values: \"small\", \"medium\", or \"large\"."
+                    },
+                    {
+                        "name": "variant",
+                        "type": "str",
+                        "default_value": "\"outlined\"",
+                        "doc": "The variant of the button. Valid values: \"contained\", \"outlined\", or \"text\"."
                     },
                     {
                         "name": "on_action",
@@ -274,12 +285,6 @@
                         "type": "bool",
                         "default_value": "False",
                         "doc": "If set, this allows de-selection and the value is set to unselected_value."
-                    },
-                    {
-                        "name": "unselected_value",
-                        "type": "Any",
-                        "default_value": "None",
-                        "doc": "Value assigned to <i>value</i> when no item is selected."
                     },
                     {
                         "name": "mode",
@@ -1228,6 +1233,12 @@
                         "doc": "If set to True, multiple files can be uploaded."
                     },
                     {
+                        "name": "selection_type",
+                        "type": "str",
+                        "default_value": "\"file\"",
+                        "doc": "Can be set to \"file\" (with \"f\", \"\" aliases) or \"directory\" (with \"d\", \"dir\", \"folder\" aliases) to upload the respective element with preserved inner structure."
+                    },
+                    {
                         "name": "extensions",
                         "type": "str",
                         "default_value": "\".csv,.xlsx\"",
@@ -1626,7 +1637,7 @@
             }
         ],
         [
-            "alert",  
+            "alert",
             {
                 "inherits": ["shared"],
                 "properties": [
@@ -1656,7 +1667,7 @@
                         "doc": "If False, the alert is hidden."
                     }
                 ]
-            }                       
+            }
         ],
         [
             "status",
@@ -1836,7 +1847,7 @@
                     }
                 ]
             }
-        ]                                       
+        ]
     ],
     "blocks": [
         [

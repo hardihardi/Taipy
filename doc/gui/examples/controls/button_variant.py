@@ -8,16 +8,16 @@
 # Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
+# -----------------------------------------------------------------------------------------
+# To execute this script, make sure that the taipy-gui package is installed in your
+# Python environment and run:
+#     python <script>
+# -----------------------------------------------------------------------------------------
+from taipy.gui import Gui
 
-from typing import Any, Dict, NewType
+page = """
+ <|Button Label|button|variant=contained|>
+"""
 
-DataNodeId = NewType("DataNodeId", str)
-"""Type that holds a `DataNode^` identifier."""
-DataNodeId.__doc__ = """Type that holds a `DataNode^` identifier."""
-Edit = NewType("Edit", Dict[str, Any])
-"""Type that holds a `DataNode^` edit information."""
-Edit.__doc__ = """Type that holds a `DataNode^` edit information."""
-EDIT_TIMESTAMP_KEY = "timestamp"
-EDIT_JOB_ID_KEY = "job_id"
-EDIT_COMMENT_KEY = "comment"
-EDIT_EDITOR_ID_KEY = "editor_id"
+if __name__ == "__main__":
+    Gui(page).run(title="Button - Variant")
