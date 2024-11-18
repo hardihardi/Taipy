@@ -69,7 +69,7 @@ def test_custom_accessor(gui: Gui):
     result = data_accessors.get_data("var_name", data, {})
     assert result == {}
 
-    # Testing when accessor is not registered
+    # Testing when accessor is registered
     data_accessors._register(MyDataAccessor)
 
     result = data_accessors.get_data("var_name", data, {})

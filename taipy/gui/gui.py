@@ -1173,7 +1173,7 @@ class Gui:
             The transformed data or None if no transformation is possible.
         """
         try:
-            return Gui.__unsupported_data_converter(value) if callable(Gui.__unsupported_data_converter) else None  # type: ignore
+            return Gui.__unsupported_data_converter(value) if _is_function(Gui.__unsupported_data_converter) else None  # type: ignore
         except Exception as e:
             _warn(f"Error transforming data: {str(e)}")
             return None
@@ -2672,7 +2672,6 @@ class Gui:
             self.__bind_local_func("on_exception")
             self.__bind_local_func("on_status")
             self.__bind_local_func("on_user_content")
-            self.__bind_local_func("on_invalid_data")
 
     def __register_blueprint(self):
         # add en empty main page if it is not defined
