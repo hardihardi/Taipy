@@ -26,26 +26,26 @@ import { getComponentClassName } from "./TaipyStyle";
 export const getStatusIntValue = (status: string) => {
     status = status.toLowerCase();
     if (status.startsWith("i")) {
-        return 1;
+        return 0;
     } else if (status.startsWith("s")) {
-        return 2;
+        return 1;
     } else if (status.startsWith("w")) {
-        return 3;
+        return 2;
     } else if (status.startsWith("e")) {
-        return 4;
+        return 3;
     }
     return 0;
 };
 
 export const getStatusStrValue = (status: number) => {
     switch (status) {
-        case 1:
+        case 0:
             return "info";
-        case 2:
+        case 1:
             return "success";
-        case 3:
+        case 2:
             return "warning";
-        case 4:
+        case 3:
             return "error";
         default:
             return "unknown";
@@ -87,8 +87,8 @@ interface StatusListProps extends TaipyBaseProps, TaipyHoverProps {
     value: Array<[string, string] | StatusType> | [string, string] | StatusType;
     defaultValue?: string;
     withoutClose?: boolean;
-    withIcons?: boolean; 
-    customIcon?: string;
+    icons?: boolean | Array<string>;
+    defaultIcons?: boolean | string;
 }
 
 const StatusList = (props: StatusListProps) => {
@@ -97,19 +97,48 @@ const StatusList = (props: StatusListProps) => {
     const [opened, setOpened] = useState(false);
     const [multiple, setMultiple] = useState(false);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const content = useMemo(() => {
-        if (typeof props.customIcon === 'string') {
-            try {
-                return props.customIcon.split(';');
-            } catch (e) {
-                console.info(`Error parsing custom icons\n${(e as Error).message || e}`);
-            }
-        }
-        return [];
-    }, [props.customIcon]);
 
     const className = useClassNames(props.libClassName, props.dynamicClassName, props.className);
     const hover = useDynamicProperty(props.hoverText, props.defaultHoverText, undefined);
+
+    const icons = useMemo(() => {
+        if (props.icons !== undefined) {
+            if (Array.isArray(props.icons)) {
+                return [...props.icons, false, false, false, false]
+                    .slice(0, 4)
+                    .map((val) =>
+                        typeof val !== "string" || val.toLowerCase() === "false"
+                            ? false
+                            : !val || val.toLowerCase() === "true"
+                            ? true
+                            : val
+                    );
+            } else {
+                return [!!props.icons, !!props.icons, !!props.icons, !!props.icons];
+            }
+        } else if (typeof props.defaultIcons === "string") {
+            try {
+                const arr = JSON.parse(props.defaultIcons);
+                if (Array.isArray(arr)) {
+                    return [...arr, false, false, false, false]
+                        .slice(0, 4)
+                        .map((val) =>
+                            typeof val !== "string" || val.toLowerCase() === "false"
+                                ? false
+                                : !val || val.toLowerCase() === "true"
+                                ? true
+                                : val
+                        );
+                }
+            } catch (e) {
+                console.info(`Error parsing custom icons\n${(e as Error).message || e}`);
+            }
+        } else {
+            return [!!props.defaultIcons, !!props.defaultIcons, !!props.defaultIcons, !!props.defaultIcons];
+        }
+
+        return [false, false, false, false];
+    }, [props.defaultIcons, props.icons]);
 
     useEffect(() => {
         let val;
@@ -141,8 +170,8 @@ const StatusList = (props: StatusListProps) => {
     }, [value, defaultValue]);
 
     const onClose = useCallback((val: StatusDel) => {
-        setValues((vals) => {
-            const res = vals.map((v) => {
+        setValues((values) => {
+            const res = values.map((v) => {
                 if (!v.hidden && statusEqual(v, val)) {
                     v.hidden = !v.hidden;
                 }
@@ -164,15 +193,22 @@ const StatusList = (props: StatusListProps) => {
     }, []);
 
     const globalProps = useMemo(
-        () => (multiple ? { onClose: onOpen, icon: opened ? <ArrowUpward /> : <ArrowDownward /> } : {}),
+        () => (multiple ? { onClose: onOpen, openedIcon: opened ? <ArrowUpward /> : <ArrowDownward /> } : {}),
         [multiple, opened, onOpen]
     );
 
+    const globStatus = getGlobalStatus(values);
 
     return (
         <Tooltip title={hover || ""}>
             <>
-                <Status id={props.id} value={getGlobalStatus(values)} className={`${className} ${getComponentClassName(props.children)}`} {...globalProps} withIcons={props.withIcons} content={content[0]}/>
+                <Status
+                    id={props.id}
+                    value={globStatus}
+                    className={`${className} ${getComponentClassName(props.children)}`}
+                    {...globalProps}
+                    icon={icons[getStatusIntValue(globStatus.status)]}
+                />
                 <Popover open={opened} anchorEl={anchorEl} onClose={onOpen} anchorOrigin={ORIGIN}>
                     <Stack direction="column" spacing={1}>
                         {values
@@ -186,8 +222,7 @@ const StatusList = (props: StatusListProps) => {
                                         value={val}
                                         className={`${className} ${getComponentClassName(props.children)}`}
                                         {...closeProp}
-                                        withIcons={props.withIcons}
-                                        content={content[idx+1] || content[0] || ''}
+                                        icon={icons[getStatusIntValue(val.status)]}
                                     />
                                 );
                             })}
