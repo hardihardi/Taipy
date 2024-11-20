@@ -38,7 +38,6 @@ from taipy.core.job.job_id import JobId
 from taipy.core.task.task import Task
 
 from .utils import FakeDataNode
-from ..job.test_job import job_id
 
 
 def funct_a_b(input: str):

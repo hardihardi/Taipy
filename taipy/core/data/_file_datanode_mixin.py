@@ -20,12 +20,14 @@ from taipy.common.config import Config
 from taipy.common.logger._taipy_logger import _TaipyLogger
 
 from .._entity._reload import _self_reload
-from ..reason import (DataNodeEditInProgress,
-                      InvalidUploadFile,
-                      NoFileToDownload,
-                      NotAFile,
-                      ReasonCollection,
-                      UploadFileCanNotBeRead)
+from ..reason import (
+    DataNodeEditInProgress,
+    InvalidUploadFile,
+    NoFileToDownload,
+    NotAFile,
+    ReasonCollection,
+    UploadFileCanNotBeRead,
+)
 from .data_node import DataNode
 from .data_node_id import Edit
 

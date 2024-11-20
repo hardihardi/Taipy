@@ -18,7 +18,6 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import networkx as nx
-from marshmallow.utils import timestamp
 
 from taipy.common.config.common._validate_id import _validate_id
 from taipy.common.config.common.scope import Scope
