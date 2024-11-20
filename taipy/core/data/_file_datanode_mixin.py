@@ -108,6 +108,8 @@ class _FileDataNodeMixin:
     def _upload(self,
                 path: str,
                 upload_checker: Optional[Callable[[str, Any], bool]] = None,
+                editor_id: Optional[str] = None,
+                comment: Optional[str] = None,
                 **kwargs: Any) -> ReasonCollection:
         """Upload a file data to the data node.
 
@@ -116,6 +118,8 @@ class _FileDataNodeMixin:
             upload_checker (Optional[Callable[[str, Any], bool]]): A function to check if the
                 upload is allowed. The function takes the title of the upload data and the data
                 itself as arguments and returns True if the upload is allowed, otherwise False.
+            editor_id (Optional[str]): The ID of the user who is uploading the file.
+            comment (Optional[str]): A comment to add to the edit history of the data node.
             **kwargs: Additional keyword arguments. These arguments are stored in the edit
                 history of the data node. In particular, an `editor_id` or a `comment` can be
                 passed. The `editor_id` is the ID of the user who is uploading the file, and the
@@ -128,9 +132,13 @@ class _FileDataNodeMixin:
         from ._data_manager_factory import _DataManagerFactory
 
         reasons = ReasonCollection()
-
-        if self.edit_in_progress and self.editor_id != editor_id: # type: ignore[attr-defined]
-            reasons._add_reason(self.id, DataNodeEditInProgress(self.id, self.editor_id))  # type: ignore[attr-defined]
+        if (editor_id
+            and self.edit_in_progress # type: ignore[attr-defined]
+            and self.editor_id != editor_id # type: ignore[attr-defined]
+            and (not self.editor_expiration_date # type: ignore[attr-defined]
+                 or self.editor_expiration_date > datetime.now())):  # type: ignore[attr-defined]
+            reasons._add_reason(self.id, DataNodeEditInProgress(self.id))  # type: ignore[attr-defined]
+            return reasons
 
         up_path = pathlib.Path(path)
         try:
@@ -159,7 +167,9 @@ class _FileDataNodeMixin:
 
         shutil.copy(up_path, self.path)
 
-        self.track_edit(timestamp=datetime.now(), **kwargs)  # type: ignore[attr-defined]
+        self.track_edit(timestamp=datetime.now(),  # type: ignore[attr-defined]
+                        editor_id=editor_id,
+                        comment=comment, **kwargs)
         self.unlock_edit()  # type: ignore[attr-defined]
 
         _DataManagerFactory._build_manager()._set(self)  # type: ignore[arg-type]

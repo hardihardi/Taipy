@@ -422,12 +422,13 @@ class DataNode(_Entity, _Labeled):
             )
             return None
 
-    def append(self, data, editor_id: Optional[str] = None, **kwargs: Any):
+    def append(self, data, editor_id: Optional[str] = None, comment: Optional[str] = None, **kwargs: Any):
         """Append some data to this data node.
 
         Arguments:
             data (Any): The data to write to this data node.
             editor_id (str): An optional identifier of the editor.
+            comment (str): An optional comment to attach to the edit document.
             **kwargs (Any): Extra information to attach to the edit document
                 corresponding to this write.
         """
@@ -438,17 +439,23 @@ class DataNode(_Entity, _Labeled):
             and (not self.editor_expiration_date or self.editor_expiration_date > datetime.now())):
             raise DataNodeIsBeingEdited(self.id, self.editor_id)
         self._append(data)
-        self.track_edit(editor_id=editor_id, **kwargs)
+        self.track_edit(editor_id=editor_id, comment=comment, **kwargs)
         self.unlock_edit()
         _DataManagerFactory._build_manager()._set(self)
 
-    def write(self, data, job_id: Optional[JobId] = None, editor_id: Optional[str] = None, **kwargs: Any):
+    def write(self,
+              data,
+              job_id: Optional[JobId] = None,
+              editor_id: Optional[str] = None,
+              comment: Optional[str] = None,
+              **kwargs: Any):
         """Write some data to this data node.
 
         Arguments:
             data (Any): The data to write to this data node.
             job_id (JobId): An optional identifier of the job writing the data.
             editor_id (str): An optional identifier of the editor writing the data.
+            comment (str): An optional comment to attach to the edit document.
             **kwargs (Any): Extra information to attach to the edit document
                 corresponding to this write.
         """
@@ -460,7 +467,7 @@ class DataNode(_Entity, _Labeled):
             and (not self.editor_expiration_date or self.editor_expiration_date > datetime.now())):
             raise DataNodeIsBeingEdited(self.id, self.editor_id)
         self._write(data)
-        self.track_edit(job_id=job_id, **kwargs)
+        self.track_edit(job_id=job_id, editor_id=editor_id, comment=comment, **kwargs)
         self.unlock_edit()
         _DataManagerFactory._build_manager()._set(self)
 

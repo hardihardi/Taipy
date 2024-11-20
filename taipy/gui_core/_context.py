@@ -1044,9 +1044,9 @@ class _GuiCoreContext(CoreEventConsumerBase):
                     else float(val)
                     if data.get("type") == "float"
                     else data.get("value"),
+                    editor_id=self.gui._get_client_id(),
                     comment=t.cast(dict, data.get(_GuiCoreContext.__PROP_ENTITY_COMMENT)),
                 )
-                entity.unlock_edit(self.gui._get_client_id())
                 _GuiCoreContext.__assign_var(state, error_var, "")
             except Exception as e:
                 _GuiCoreContext.__assign_var(state, error_var, f"Error updating Data node value. {e}")
@@ -1241,6 +1241,7 @@ class _GuiCoreContext(CoreEventConsumerBase):
                         reason := dn._upload(
                             act_payload.get("path", ""),
                             t.cast(t.Callable[[str, t.Any], bool], checker) if callable(checker) else None,
+                            editor_id=self.gui._get_client_id(),
                         )
                     ):
                         state.assign(error_id, f"Data unavailable: {reason.reasons}")
