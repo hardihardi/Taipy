@@ -10,6 +10,7 @@
 # specific language governing permissions and limitations under the License.
 
 import json
+import re
 from copy import copy
 from datetime import timedelta
 from typing import Any, Callable, Dict, List, Optional, Union
@@ -275,6 +276,8 @@ class DataNodeConfig(Section):
         self._storage_type = storage_type
         self._scope = scope
         self._validity_period = validity_period
+        if "path" in properties:
+            properties["path"] = self._normalize_path(properties["path"])
         super().__init__(id, **properties)
 
         # modin exposed type is deprecated since taipy 3.1.0
@@ -291,6 +294,10 @@ class DataNodeConfig(Section):
 
     def __getattr__(self, item: str) -> Optional[Any]:
         return _tpl._replace_templates(self._properties.get(item))
+
+    @staticmethod
+    def _normalize_path(path: str) -> str:
+        return re.sub(r"[\\]+", "/", path)
 
     @property
     def storage_type(self) -> str:
@@ -322,7 +329,7 @@ class DataNodeConfig(Section):
 
     @property
     def validity_period(self) -> Optional[timedelta]:
-        """ The validity period of the data nodes instantiated from the data node config.
+        """The validity period of the data nodes instantiated from the data node config.
 
         It corresponds to the duration since the last edit date for which the data node
         can be considered valid. Once the validity period has passed, the data node is

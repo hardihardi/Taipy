@@ -11,6 +11,7 @@
 
 import os
 import pathlib
+import re
 import shutil
 from datetime import datetime
 from os.path import isfile
@@ -64,9 +65,10 @@ class _FileDataNodeMixin(object):
 
     @path.setter
     def path(self, value) -> None:
-        self._path = value
-        self.properties[self._PATH_KEY] = value
-        self.properties[self._IS_GENERATED_KEY] = False
+        _path = self._normalize_path(value)
+        self._path = _path
+        self.properties[self._PATH_KEY] = _path  # type: ignore[attr-defined]
+        self.properties[self._IS_GENERATED_KEY] = False  # type: ignore[attr-defined]
 
     def is_downloadable(self) -> ReasonCollection:
         """Check if the data node is downloadable.
@@ -180,3 +182,7 @@ class _FileDataNodeMixin(object):
         if os.path.exists(old_path):
             shutil.move(old_path, new_path)
         return new_path
+
+    @staticmethod
+    def _normalize_path(path: str) -> str:
+        return re.sub(r"[\\]+", "/", path)
