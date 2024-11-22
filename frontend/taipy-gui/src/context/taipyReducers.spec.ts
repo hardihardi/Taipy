@@ -14,10 +14,10 @@
 import "@testing-library/jest-dom";
 import {
     addRows,
-    AlertMessage,
+    NotificationMessage,
     BlockMessage,
     createAckAction,
-    createAlertAction,
+    createNotificationAction,
     createBlockAction,
     createDownloadAction,
     createIdAction,
@@ -92,7 +92,7 @@ describe("reducer", () => {
                 atype: "i",
                 message: "message",
                 system: "system",
-            } as TaipyBaseAction).alerts
+            } as TaipyBaseAction).notifications
         ).toHaveLength(1);
     });
     it("set show block", async () => {
@@ -202,11 +202,11 @@ describe("reducer", () => {
         ).toBeUndefined();
     });
     it("creates an alert action", () => {
-        expect(createAlertAction({ atype: "I", message: "message" } as AlertMessage).type).toBe("SET_ALERT");
-        expect(createAlertAction({ atype: "err", message: "message" } as AlertMessage).atype).toBe("error");
-        expect(createAlertAction({ atype: "Wa", message: "message" } as AlertMessage).atype).toBe("warning");
-        expect(createAlertAction({ atype: "sUc", message: "message" } as AlertMessage).atype).toBe("success");
-        expect(createAlertAction({ atype: "  ", message: "message" } as AlertMessage).atype).toBe("");
+        expect(createNotificationAction({ atype: "I", message: "message" } as NotificationMessage).type).toBe("SET_ALERT");
+        expect(createNotificationAction({ atype: "err", message: "message" } as NotificationMessage).atype).toBe("error");
+        expect(createNotificationAction({ atype: "Wa", message: "message" } as NotificationMessage).atype).toBe("warning");
+        expect(createNotificationAction({ atype: "sUc", message: "message" } as NotificationMessage).atype).toBe("success");
+        expect(createNotificationAction({ atype: "  ", message: "message" } as NotificationMessage).atype).toBe("");
     });
 });
 
@@ -571,7 +571,7 @@ describe("taipyReducer function", () => {
     });
     it("should handle SET_ALERT action", () => {
         const action = {
-            type: Types.SetAlert,
+            type: Types.SetNotification,
             atype: "error",
             message: "some error message",
             system: true,
@@ -579,7 +579,7 @@ describe("taipyReducer function", () => {
             notificationId: nanoid(),
         };
         const newState = taipyReducer({ ...INITIAL_STATE }, action);
-        expect(newState.alerts).toContainEqual({
+        expect(newState.notifications).toContainEqual({
             atype: action.atype,
             message: action.message,
             system: action.system,
@@ -597,9 +597,9 @@ describe("taipyReducer function", () => {
                 { atype: "warning", message: "Second Alert", system: false, duration: 3000, notificationId: notificationId2 },
             ],
         };
-        const action = { type: Types.DeleteAlert, notificationId: notificationId1 };
+        const action = { type: Types.DeleteNotification, notificationId: notificationId1 };
         const newState = taipyReducer(initialState, action);
-        expect(newState.alerts).toEqual([{ atype: "warning", message: "Second Alert", system: false, duration: 3000, notificationId: notificationId2 }]);
+        expect(newState.notifications).toEqual([{ atype: "warning", message: "Second Alert", system: false, duration: 3000, notificationId: notificationId2 }]);
     });
     it('should not modify state if DELETE_ALERT does not match any notificationId', () => {
         const notificationId1 = "id-1234";
@@ -612,13 +612,13 @@ describe("taipyReducer function", () => {
                 { atype: "warning", message: "Second Alert", system: false, duration: 3000, notificationId: notificationId2 },
             ],
         };
-        const action = { type: Types.DeleteAlert, notificationId: nonExistentId };
+        const action = { type: Types.DeleteNotification, notificationId: nonExistentId };
         const newState = taipyReducer(initialState, action);
         expect(newState).toEqual(initialState);
     });
     it("should not modify state if no alerts are present", () => {
         const initialState = { ...INITIAL_STATE, alerts: [] };
-        const action = { type: Types.DeleteAlert };
+        const action = { type: Types.DeleteNotification };
         const newState = taipyReducer(initialState, action);
         expect(newState).toEqual(initialState);
     });
@@ -645,9 +645,9 @@ describe("taipyReducer function", () => {
                 },
             ],
         };
-        const action = { type: Types.DeleteAlert, notificationId: notificationId1 };
+        const action = { type: Types.DeleteNotification, notificationId: notificationId1 };
         const newState = taipyReducer(initialState, action);
-        expect(newState.alerts).toEqual([
+        expect(newState.notifications).toEqual([
             {
                 message: "alert2",
                 atype: "type2",
@@ -888,7 +888,7 @@ describe("messageToAction function", () => {
         expect(result).toEqual(expected);
     });
     it('should call createAlertAction if message type is "AL"', () => {
-        const message: WsMessage & Partial<AlertMessage> = {
+        const message: WsMessage & Partial<NotificationMessage> = {
             type: "AL",
             atype: "I",
             name: "someName",
@@ -899,7 +899,7 @@ describe("messageToAction function", () => {
             ack_id: "someAckId",
         };
         const result = messageToAction(message);
-        const expectedResult = createAlertAction(message as unknown as AlertMessage);
+        const expectedResult = createNotificationAction(message as unknown as NotificationMessage);
         expect(result).toEqual(expectedResult);
     });
     it('should call createBlockAction if message type is "BL"', () => {

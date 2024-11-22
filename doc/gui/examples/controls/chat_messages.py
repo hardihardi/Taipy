@@ -12,10 +12,10 @@
 from taipy.gui import Gui, Icon
 
 msgs = [
-    ["1", "msg 1", "Alice", None],
-    ["2", "msg From Another unknown User", "Charles", None],
-    ["3", "This from the sender User", "taipy", "./sample.jpeg"],
-    ["4", "And from another known one", "Alice", None],
+    ["1", "msg 1", "Alice"],
+    ["2", "msg From Another unknown User", "Charles"],
+    ["3", "This from the sender User", "taipy"],
+    ["4", "And from another known one", "Alice"],
 ]
 users = [
     ["Alice", Icon("./alice-avatar.png", "Alice avatar")],
@@ -26,21 +26,20 @@ users = [
 
 def on_action(state, var_name: str, payload: dict):
     args = payload.get("args", [])
-    msgs.append([f"{len(msgs) +1 }", args[2], args[3], args[4]])
+    msgs.append([f"{len(msgs) +1 }", args[2], args[3]])
     state.msgs = msgs
 
 
-Gui(
-    """
-<|toggle|theme|>
-# Test Chat
+page="""
 <|1 1 1|layout|
-<|{msgs}|chat|users={users}|show_sender={True}|>
+<|{msgs}|chat|users={users}|show_sender={True}|don't allow_send_images|>
 
 <|part|>
 
 <|{msgs}|chat|users={users}|show_sender={True}|not with_input|>
 |>
 
-""",
-).run()
+"""
+
+if __name__ == "__main__":
+    Gui(page).run(title="Chat - Simple")
