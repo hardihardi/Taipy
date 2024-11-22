@@ -69,19 +69,31 @@ describe("Chat Component", () => {
         expect(elt.tagName).toBe("IMG");
     });
     it("is disabled", async () => {
-        const { getAllByRole } = render(<Chat messages={messages} active={false} defaultKey={valueKey} mode="raw" />);
-        const elts = getAllByRole("button");
-        elts.forEach((elt) => expect(elt).toHaveClass("Mui-disabled"));
+        const { getByLabelText, getByRole } = render(<Chat messages={messages} active={false} defaultKey={valueKey} mode="raw" />);
+        const elt = getByLabelText("message (taipy)");
+        const sendButton = getByRole("button", { name: /send message/i });
+        expect(elt).toHaveClass("Mui-disabled");
+        await userEvent.click(elt);
+        await userEvent.keyboard("new message");
+        expect(elt).toHaveClass("Mui-disabled");
     });
     it("is enabled by default", async () => {
-        const { getAllByRole } = render(<Chat messages={messages} defaultKey={valueKey} mode="raw" />);
-        const elts = getAllByRole("button");
-        elts.forEach((elt) => expect(elt).not.toHaveClass("Mui-disabled"));
+        const { getByLabelText, getByRole } = render(<Chat messages={messages} defaultKey={valueKey} mode="raw" />);
+        const elt = getByLabelText("message (taipy)");
+        const sendButton = getByRole("button", { name: /send message/i });
+        expect(elt).toHaveClass("Mui-disabled");
+        await userEvent.click(elt);
+        await userEvent.keyboard("new message");
+        expect(elt).not.toHaveClass("Mui-disabled");
     });
     it("is enabled by active", async () => {
-        const { getAllByRole } = render(<Chat messages={messages} active={true} defaultKey={valueKey} mode="raw" />);
-        const elts = getAllByRole("button");
-        elts.forEach((elt) => expect(elt).not.toHaveClass("Mui-disabled"));
+        const { getByLabelText, getByRole } = render(<Chat messages={messages} active={true} defaultKey={valueKey} mode="raw" />);
+        const elt = getByLabelText("message (taipy)");
+        const sendButton = getByRole("button", { name: /send message/i });
+        expect(elt).toHaveClass("Mui-disabled");
+        await userEvent.click(elt);
+        await userEvent.keyboard("new message");
+        expect(elt).not.toHaveClass("Mui-disabled");
     });
     it("can hide input", async () => {
         render(<Chat messages={messages} withInput={false} className="taipy-chat" defaultKey={valueKey} mode="raw" />);
