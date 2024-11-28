@@ -375,33 +375,44 @@ class ScenarioConfig(Section):
         return Config.sections[ScenarioConfig.name][_Config.DEFAULT_KEY]
 
     def draw(self, file_path: Optional[str]=None) -> None:
-        """Draw the scenario configuration and export it as a PNG file."""
+        """
+        Export the scenario configuration graph as a PNG file.
+
+        This function uses the `matplotlib` library to draw the scenario configuration graph.
+        `matplotlib` must be installed independently of `taipy` as it is not a dependency.
+        If `matplotlib` is not installed, the function will log an error message, and do nothing.
+
+        Arguments:
+            file_path (Optional[str]): The path to save the PNG file.
+                If not provided, the file will be saved with the scenario configuration id.
+        """
         from importlib import util
         from taipy.common.logger._taipy_logger import _TaipyLogger
         logger = _TaipyLogger._get_logger()
 
         if not util.find_spec("matplotlib"):
-            logger.error("Cannot draw the scenario configuration as matplotlib is not installed.")
+            logger.error("Cannot draw the scenario configuration as `matplotlib` is not installed.")
             return
         import networkx as nx
         from taipy.core._entity._dag import _DAG
         import matplotlib.pyplot as plt
 
-        # Build the nx DAG
-        graph = nx.DiGraph()
-        for task in set(self.tasks):
-            if has_input := task.inputs:
-                for predecessor in task.inputs:
-                    graph.add_edges_from([(predecessor, task)])
-            if has_output := task.outputs:
-                for successor in task.outputs:
-                    graph.add_edges_from([(task, successor)])
-            if not has_input and not has_output:
-                graph.add_node(task)
+        def build_dag() -> nx.DiGraph:
+            graph = nx.DiGraph()
+            for task in set(self.tasks):
+                if has_input := task.inputs:
+                    for predecessor in task.inputs:
+                        graph.add_edges_from([(predecessor, task)])
+                if has_output := task.outputs:
+                    for successor in task.outputs:
+                        graph.add_edges_from([(task, successor)])
+                if not has_input and not has_output:
+                    graph.add_node(task)
+            return graph
+        graph = build_dag()
         dag = _DAG(graph)
         pos = {node.entity: (node.x, node.y) for node in dag.nodes.values()}
-        print({k.id: v for k, v in pos.items()})
-        labels = {node.entity: node.entity.id for node in dag.nodes.values()}
+        labls = {node.entity: node.entity.id for node in dag.nodes.values()}
 
         # Draw the graph
         plt.figure(figsize=(10, 10))
@@ -415,7 +426,7 @@ class ScenarioConfig(Section):
                                node_color="orange",
                                node_shape="D",
                                node_size=2000)
-        nx.draw_networkx_labels(graph, pos, labels=labels)
+        nx.draw_networkx_labels(graph, pos, labels=labls)
         nx.draw_networkx_edges(graph, pos, node_size=2000, edge_color="black", arrowstyle="->", arrowsize=25)
         plt.savefig(file_path or f"{self.id}.png")
         plt.close()  # Close the plot to avoid display
