@@ -432,4 +432,4 @@ class ScenarioConfig(Section):
         path = file_path or f"{self.id}.png"
         plt.savefig(path)
         plt.close()  # Close the plot to avoid display
-        logger.info(f"Graph exported as image: {path}")
+        logger.info(f"The graph image of the scenario configuration `{self.id}` is exported: {path}")
