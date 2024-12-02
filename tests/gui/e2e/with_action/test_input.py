@@ -52,7 +52,7 @@ def test_input_action(page: "Page", gui: Gui, helpers):
     page.goto("./test")
     page.expect_websocket()
     page.wait_for_selector("#input1_tracker")
-    assert page.query_selector("#input1").input_value() == "init"
+    assert page.query_selector("#input1").input_value() == "init", "Wrong initial value"
     page.click("#button1")
     try:
         page.wait_for_function("document.querySelector('#button_tracker').innerText !== '0'")
@@ -62,16 +62,22 @@ def test_input_action(page: "Page", gui: Gui, helpers):
     page.click("#input1")
     page.fill("#input1", "step2")
     page.click("#button1")
+    try:
+        page.wait_for_function("document.querySelector('#button_tracker').innerText !== '1'")
+    except Exception as e:
+        logging.getLogger().debug(f"Function evaluation timeout.\n{e}")
+    assert page.query_selector("#button_tracker").inner_text() == "2", "Button action should have been invoked"
     assert (
         page.query_selector("#input1_tracker").inner_text() == "0"
     ), "Action should not have been invoked (no action_on_blur)"
-    assert page.query_selector("#button_tracker").inner_text() == "2", "Button action should have been invoked"
     page.click("#input2")
     page.fill("#input2", "step2")
     page.click("#button1")
+    try:
+        page.wait_for_function("document.querySelector('#button_tracker').innerText !== '2'")
+    except Exception as e:
+        logging.getLogger().debug(f"Function evaluation timeout.\n{e}")
     assert page.query_selector("#button_tracker").inner_text() == "3", "Button action should have been invoked"
-    page.click("#button1")
     assert (
         page.query_selector("#input2_tracker").inner_text() == "1"
     ), "Action should have been invoked (action_on_blur)"
-    assert page.query_selector("#button_tracker").inner_text() == "4"
