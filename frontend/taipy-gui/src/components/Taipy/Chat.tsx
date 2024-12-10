@@ -426,7 +426,7 @@ const Chat = (props: ChatProps) => {
     );
 
     const showBottom = useCallback(() => {
-        anchorDivRef.current?.scrollIntoView();
+        anchorDivRef.current?.scrollIntoView && anchorDivRef.current?.scrollIntoView();
         setShowMessage(false);
     }, []);
 
