@@ -357,21 +357,19 @@ const Chart = (props: ChartProp) => {
             const [backCols, dtKey] = getDataKey(config.columns, config.decimators);
             setDataKey(dtKey);
             if (refresh || !data[dtKey]) {
-                Promise.resolve().then(() =>
-                    dispatch(
-                        createRequestChartUpdateAction(
-                            updateVarName,
-                            id,
-                            module,
-                            backCols,
-                            dtKey,
-                            getDecimatorsPayload(
-                                config.decimators,
-                                plotRef.current,
-                                config.modes,
-                                config.columns,
-                                config.traces
-                            )
+                dispatch(
+                    createRequestChartUpdateAction(
+                        updateVarName,
+                        id,
+                        module,
+                        backCols,
+                        dtKey,
+                        getDecimatorsPayload(
+                            config.decimators,
+                            plotRef.current,
+                            config.modes,
+                            config.columns,
+                            config.traces
                         )
                     )
                 );
