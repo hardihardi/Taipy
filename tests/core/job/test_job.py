@@ -235,7 +235,6 @@ def test_handle_exception_in_input_data_node(task_id, job_id):
 
 def test_handle_exception_in_ouptut_data_node(replace_in_memory_write_fct, task_id, job_id):
     data_node = InMemoryDataNode("data_node", scope=Scope.SCENARIO)
-    data_node._write = _error
     task = Task(config_id="name", properties={}, input=[], function=_foo, output=[data_node], id=task_id)
     submission = _SubmissionManagerFactory._build_manager()._create(task.id, task._ID_PREFIX, task.config_id)
     job = Job(job_id, task, submission.id, "scenario_entity_id")

@@ -12,6 +12,7 @@
 from queue import SimpleQueue
 from typing import Any, Dict, List
 
+from taipy import Orchestrator
 from taipy.common.config import Config, Frequency
 from taipy.core import taipy as tp
 from taipy.core.job.status import Status
@@ -156,6 +157,14 @@ def test_events_published_for_writing_dn():
 
 
 def test_events_published_for_scenario_submission():
+    _events_published_for_scenario_submission()
+
+def test_events_published_for_scenario_submission_standalone():
+    _events_published_for_scenario_submission(standalone=True)
+
+def _events_published_for_scenario_submission(standalone=False):
+    if standalone:
+        Config.configure_job_executions(mode="standalone", max_nb_of_workers=2)
     input_config = Config.configure_data_node("the_input")
     output_config = Config.configure_data_node("the_output")
     task_config = Config.configure_task("the_task", identity, input=input_config, output=output_config)
@@ -176,7 +185,11 @@ def test_events_published_for_scenario_submission():
     # 1 submission update event for jobs
     # 3 submission update events (for status: PENDING, RUNNING and COMPLETED)
     # 1 submission update event for is_completed
-    scenario.submit()
+    if standalone:
+        Orchestrator().run()
+        scenario.submit(wait=True)
+    else:
+        scenario.submit()
     snapshot = all_evts.capture()
     assert len(snapshot.collected_events) == 18
     assert snapshot.entity_type_collected.get(EventEntityType.CYCLE, 0) == 0
