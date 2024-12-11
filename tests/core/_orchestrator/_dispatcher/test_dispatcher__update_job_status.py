@@ -10,11 +10,11 @@
 # specific language governing permissions and limitations under the License.
 import traceback
 
-from taipy import Job, JobId, Status, Task, Scope
+from taipy import Job, JobId, Scope, Status, Task
 from taipy.core._orchestrator._dispatcher import _JobDispatcher
 from taipy.core._orchestrator._orchestrator_factory import _OrchestratorFactory
 from taipy.core.data import InMemoryDataNode
-from taipy.core.data.data_node_id import EDIT_TIMESTAMP_KEY, EDIT_JOB_ID_KEY, EDIT_COMMENT_KEY, EDIT_EDITOR_ID_KEY
+from taipy.core.data.data_node_id import EDIT_JOB_ID_KEY, EDIT_TIMESTAMP_KEY
 from taipy.core.job._job_manager_factory import _JobManagerFactory
 from taipy.core.task._task_manager_factory import _TaskManagerFactory
 
