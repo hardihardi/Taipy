@@ -200,10 +200,7 @@ class _GuiCoreContext(CoreEventConsumerBase):
                         )
                     payload.update(tasks=running_tasks)
 
-                    if (
-                        last_client_status.submission_status is None
-                        or last_client_status.submission_status.value < new_status.value
-                    ):
+                    if last_client_status.submission_status is not new_status:
                         # callback
                         submission_name = submission.properties.get("on_submission")
                         if submission_name:
