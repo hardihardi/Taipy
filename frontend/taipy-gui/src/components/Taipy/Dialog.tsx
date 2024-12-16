@@ -57,19 +57,26 @@ const titleSx = { m: 0, p: 2, display: "flex", paddingRight: "0.1em" };
 
 const virtualElt = {
     nodeType: 1,
-    getBoundingClientRect: () =>
-        new DOMRect(
-            document.body.offsetWidth - document.body.offsetLeft,
-            document.body.offsetHeight - document.body.offsetTop,
-            0,
-            0
-        ),
+    getBoundingClientRect: () => {
+        const x = (document.body.offsetWidth - document.body.offsetLeft) / 2;
+        const y = (document.body.offsetHeight - document.body.offsetTop) / 2;
+        return {
+            x,
+            y,
+            width: 0,
+            height: 0,
+            top: y,
+            left: x,
+            bottom: y,
+            right: x,
+        };
+    },
 } as Element;
 
 const popoverAnchor: PopoverOrigin = {
-    vertical: 'center',
-    horizontal: 'center',
-  };
+    vertical: "center",
+    horizontal: "center",
+};
 
 const Dialog = (props: DialogProps) => {
     const {
