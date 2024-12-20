@@ -86,6 +86,8 @@ export interface ColumnDesc {
     lov?: string[];
     /** If true the user can enter any value besides the lov values. */
     freeLov?: boolean;
+    /** If false, the column cannot be sorted */
+    sortable?: boolean;
 }
 
 export const DEFAULT_SIZE = "small";
@@ -140,6 +142,7 @@ export interface TaipyTableProps extends TaipyActiveProps, TaipyMultiSelectProps
     onCompare?: string;
     compare?: boolean;
     useCheckbox?: boolean;
+    sortable?: boolean;
 }
 
 export const DownloadAction = "__Taipy__download_csv";

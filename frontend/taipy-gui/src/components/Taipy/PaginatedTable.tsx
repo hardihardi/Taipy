@@ -42,37 +42,7 @@ import DataSaverOff from "@mui/icons-material/DataSaverOff";
 import Download from "@mui/icons-material/Download";
 
 import { createRequestTableUpdateAction, createSendActionNameAction } from "../../context/taipyReducers";
-import {
-    addActionColumn,
-    baseBoxSx,
-    defaultColumns,
-    EditableCell,
-    EDIT_COL,
-    getClassName,
-    getSortByIndex,
-    headBoxSx,
-    ROW_CLASS_NAME,
-    OnCellValidation,
-    OnRowDeletion,
-    Order,
-    PageSizeOptionsType,
-    paperSx,
-    RowType,
-    RowValue,
-    tableSx,
-    TaipyPaginatedTableProps,
-    ColumnDesc,
-    iconInRowSx,
-    DEFAULT_SIZE,
-    OnRowSelection,
-    getRowIndex,
-    getTooltip,
-    OnRowClick,
-    DownloadAction,
-    getFormatFn,
-    getPageKey,
-    FilterDesc,
-} from "./tableUtils";
+import { emptyArray } from "../../utils";
 import {
     useClassNames,
     useDispatch,
@@ -83,8 +53,38 @@ import {
     useModule,
 } from "../../utils/hooks";
 import TableFilter from "./TableFilter";
-import { getSuffixedClassNames, getUpdateVar } from "./utils";
-import { emptyArray } from "../../utils";
+import {
+    addActionColumn,
+    baseBoxSx,
+    ColumnDesc,
+    DEFAULT_SIZE,
+    defaultColumns,
+    DownloadAction,
+    EDIT_COL,
+    EditableCell,
+    FilterDesc,
+    getClassName,
+    getFormatFn,
+    getPageKey,
+    getRowIndex,
+    getSortByIndex,
+    getTooltip,
+    headBoxSx,
+    iconInRowSx,
+    OnCellValidation,
+    OnRowClick,
+    OnRowDeletion,
+    OnRowSelection,
+    Order,
+    PageSizeOptionsType,
+    paperSx,
+    ROW_CLASS_NAME,
+    RowType,
+    RowValue,
+    tableSx,
+    TaipyPaginatedTableProps,
+} from "./tableUtils";
+import { getCssSize, getSuffixedClassNames, getUpdateVar } from "./utils";
 
 const loadingStyle: CSSProperties = { width: "100%", height: "3em", textAlign: "right", verticalAlign: "center" };
 const skeletonSx = { width: "100%", height: "3em" };
@@ -112,6 +112,7 @@ const PaginatedTable = (props: TaipyPaginatedTableProps) => {
         compare = false,
         onCompare = "",
         useCheckbox = false,
+        sortable = true,
     } = props;
     const pageSize = props.pageSize === undefined || props.pageSize < 1 ? 100 : Math.round(props.pageSize);
     const [value, setValue] = useState<Record<string, unknown>>({});
@@ -135,98 +136,111 @@ const PaginatedTable = (props: TaipyPaginatedTableProps) => {
     const hover = useDynamicProperty(props.hoverText, props.defaultHoverText, undefined);
     const baseColumns = useDynamicJsonProperty(props.columns, props.defaultColumns, defaultColumns);
 
-    const [colsOrder, columns, cellClassNames, tooltips, formats, handleNan, filter, partialEditable, nbWidth] = useMemo(() => {
-        let hNan = !!props.nanValue;
-        if (baseColumns) {
-            try {
-                let filter = false;
-                let partialEditable = editable;
-                const newCols: Record<string, ColumnDesc> = {};
-                Object.entries(baseColumns).forEach(([cId, cDesc]) => {
-                    const nDesc = (newCols[cId] = { ...cDesc });
-                    if (typeof nDesc.filter != "boolean") {
-                        nDesc.filter = !!props.filter;
+    const [colsOrder, columns, cellClassNames, tooltips, formats, handleNan, filter, partialEditable, calcWidth] =
+        useMemo(() => {
+            let hNan = !!props.nanValue;
+            if (baseColumns) {
+                try {
+                    let filter = false;
+                    let partialEditable = editable;
+                    const newCols: Record<string, ColumnDesc> = {};
+                    Object.entries(baseColumns).forEach(([cId, cDesc]) => {
+                        const nDesc = (newCols[cId] = { ...cDesc });
+                        if (typeof nDesc.filter != "boolean") {
+                            nDesc.filter = !!props.filter;
+                        }
+                        filter = filter || nDesc.filter;
+                        if (typeof nDesc.notEditable == "boolean") {
+                            partialEditable = partialEditable || !nDesc.notEditable;
+                        } else {
+                            nDesc.notEditable = !editable;
+                        }
+                        if (nDesc.tooltip === undefined) {
+                            nDesc.tooltip = props.tooltip;
+                        }
+                        if (typeof nDesc.sortable != "boolean") {
+                            nDesc.sortable = sortable;
+                        }
+                    });
+                    addActionColumn(
+                        (active && partialEditable && (onAdd || onDelete) ? 1 : 0) +
+                            (active && filter ? 1 : 0) +
+                            (active && downloadable ? 1 : 0),
+                        newCols
+                    );
+                    const colsOrder = Object.keys(newCols).sort(getSortByIndex(newCols));
+                    let nbWidth = 0;
+                    let widthRate = 0;
+                    const functions = colsOrder.reduce<Record<string, Record<string, string>>>((pv, col) => {
+                        if (newCols[col].className) {
+                            pv.classNames = pv.classNames || {};
+                            pv.classNames[newCols[col].dfid] = newCols[col].className;
+                        }
+                        hNan = hNan || !!newCols[col].nanValue;
+                        if (newCols[col].tooltip) {
+                            pv.tooltips = pv.tooltips || {};
+                            pv.tooltips[newCols[col].dfid] = newCols[col].tooltip;
+                        }
+                        if (newCols[col].formatFn) {
+                            pv.formats = pv.formats || {};
+                            pv.formats[newCols[col].dfid] = newCols[col].formatFn;
+                        }
+                        if (newCols[col].width !== undefined) {
+                            const cssWidth = getCssSize(newCols[col].width);
+                            if (cssWidth) {
+                                newCols[col].width = cssWidth;
+                                nbWidth++;
+                                if (cssWidth.endsWith("%")) {
+                                    widthRate += parseInt(cssWidth, 10);
+                                }
+                            }
+                        }
+                        return pv;
+                    }, {});
+                    nbWidth = nbWidth ? colsOrder.length - nbWidth : 0;
+                    if (props.rowClassName) {
+                        functions.classNames = functions.classNames || {};
+                        functions.classNames[ROW_CLASS_NAME] = props.rowClassName;
                     }
-                    filter = filter || nDesc.filter;
-                    if (typeof nDesc.notEditable == "boolean") {
-                        partialEditable = partialEditable || !nDesc.notEditable;
-                    } else {
-                        nDesc.notEditable = !editable;
-                    }
-                    if (nDesc.tooltip === undefined) {
-                        nDesc.tooltip = props.tooltip;
-                    }
-                });
-                addActionColumn(
-                    (active && partialEditable && (onAdd || onDelete) ? 1 : 0) +
-                        (active && filter ? 1 : 0) +
-                        (active && downloadable ? 1 : 0),
-                    newCols
-                );
-                const colsOrder = Object.keys(newCols).sort(getSortByIndex(newCols));
-                let nbWidth = 0;
-                const functions = colsOrder.reduce<Record<string, Record<string, string>>>((pv, col) => {
-                    if (newCols[col].className) {
-                        pv.classNames = pv.classNames || {};
-                        pv.classNames[newCols[col].dfid] = newCols[col].className;
-                    }
-                    hNan = hNan || !!newCols[col].nanValue;
-                    if (newCols[col].tooltip) {
-                        pv.tooltips = pv.tooltips || {};
-                        pv.tooltips[newCols[col].dfid] = newCols[col].tooltip;
-                    }
-                    if (newCols[col].formatFn) {
-                        pv.formats = pv.formats || {};
-                        pv.formats[newCols[col].dfid] = newCols[col].formatFn;
-                    }
-                    if (newCols[col].width !== undefined) {
-                        nbWidth++;
-                    }
-                    return pv;
-                }, {});
-                nbWidth = nbWidth ? colsOrder.length - nbWidth : 0;
-                if (props.rowClassName) {
-                    functions.classNames = functions.classNames || {};
-                    functions.classNames[ROW_CLASS_NAME] = props.rowClassName;
+                    return [
+                        colsOrder,
+                        newCols,
+                        functions.classNames,
+                        functions.tooltips,
+                        functions.formats,
+                        hNan,
+                        filter,
+                        partialEditable,
+                        nbWidth > 0 ? `${(100 - widthRate) / nbWidth}%` : undefined
+                    ];
+                } catch (e) {
+                    console.info("PaginatedTable.columns: ", (e as Error).message || e);
                 }
-                return [
-                    colsOrder,
-                    newCols,
-                    functions.classNames,
-                    functions.tooltips,
-                    functions.formats,
-                    hNan,
-                    filter,
-                    partialEditable,
-                    nbWidth,
-                ];
-            } catch (e) {
-                console.info("PaginatedTable.columns: ", (e as Error).message || e);
             }
-        }
-        return [
-            [] as string[],
-            {} as Record<string, ColumnDesc>,
-            {} as Record<string, string>,
-            {} as Record<string, string>,
-            {} as Record<string, string>,
-            hNan,
-            false,
-            false,
-            0,
-        ];
-    }, [
-        active,
-        editable,
-        onAdd,
-        onDelete,
-        baseColumns,
-        props.rowClassName,
-        props.tooltip,
-        props.nanValue,
-        props.filter,
-        downloadable,
-    ]);
+            return [
+                [] as string[],
+                {} as Record<string, ColumnDesc>,
+                {} as Record<string, string>,
+                {} as Record<string, string>,
+                {} as Record<string, string>,
+                hNan,
+                false,
+                false,
+                ""
+            ];
+        }, [
+            active,
+            editable,
+            onAdd,
+            onDelete,
+            baseColumns,
+            props.rowClassName,
+            props.tooltip,
+            props.nanValue,
+            props.filter,
+            downloadable,
+            sortable,
+        ]);
 
     useDispatchRequestUpdateOnFirstRender(dispatch, id, module, updateVars);
 
@@ -503,9 +517,9 @@ const PaginatedTable = (props: TaipyPaginatedTableProps) => {
                                             sortDirection={orderBy === columns[col].dfid && order}
                                             sx={
                                                 columns[col].width
-                                                    ? { minWidth: columns[col].width }
-                                                    : nbWidth
-                                                    ? { minWidth: `${100 / nbWidth}%` }
+                                                    ? { minWidth:columns[col].width }
+                                                    : calcWidth
+                                                    ? { width: calcWidth }
                                                     : undefined
                                             }
                                         >
@@ -551,8 +565,8 @@ const PaginatedTable = (props: TaipyPaginatedTableProps) => {
                                                     direction={orderBy === columns[col].dfid ? order : "asc"}
                                                     data-dfid={columns[col].dfid}
                                                     onClick={onSort}
-                                                    disabled={!active}
-                                                    hideSortIcon={!active}
+                                                    disabled={!active || !columns[col].sortable}
+                                                    hideSortIcon={!active || !columns[col].sortable}
                                                 >
                                                     <Box sx={headBoxSx}>
                                                         {columns[col].groupBy ? (
