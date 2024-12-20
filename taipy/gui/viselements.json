@@ -1081,7 +1081,7 @@
                         "name": "sortable",
                         "type": "bool",
                         "default_value": "True",
-                        "doc": "If False, the table provides no sorting capability. (TO BE DISCUSSED: can be overridden on a column basis by specifying sortable key in the columns dict."
+                        "doc": "If False, the table provides no sorting capability. Individual columns can override this global setting, allowing specific columns to be marked as sortable or non-sortable regardless of value of <i>sortable</i>, by setting the <i>sortable</i> property to True or False accordingly, in the dictionary for that column in the <i>columns</i> property value."
                     }
                 ]
             }
