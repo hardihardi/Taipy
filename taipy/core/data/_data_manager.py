@@ -38,6 +38,17 @@ class _DataManager(_Manager[DataNode], _VersionMixin):
     _repository: _DataFSRepository
 
     @classmethod
+    def _get_owner_id(
+        cls, scope, cycle_id, scenario_id
+    ) -> Union[Optional[SequenceId], Optional[ScenarioId], Optional[CycleId]]:
+        if scope == Scope.SCENARIO:
+            return scenario_id
+        elif scope == Scope.CYCLE:
+            return cycle_id
+        else:
+            return None
+
+    @classmethod
     def _bulk_get_or_create(
         cls,
         data_node_configs: List[DataNodeConfig],
@@ -48,13 +59,7 @@ class _DataManager(_Manager[DataNode], _VersionMixin):
         dn_configs_and_owner_id = []
         for dn_config in data_node_configs:
             scope = dn_config.scope
-            owner_id: Union[Optional[SequenceId], Optional[ScenarioId], Optional[CycleId]]
-            if scope == Scope.SCENARIO:
-                owner_id = scenario_id
-            elif scope == Scope.CYCLE:
-                owner_id = cycle_id
-            else:
-                owner_id = None
+            owner_id = cls._get_owner_id(scope, cycle_id, scenario_id)
             dn_configs_and_owner_id.append((dn_config, owner_id))
 
         data_nodes = cls._repository._get_by_configs_and_owner_ids(
@@ -174,3 +179,14 @@ class _DataManager(_Manager[DataNode], _VersionMixin):
         for fil in filters:
             fil.update({"config_id": config_id})
         return cls._repository._load_all(filters)
+
+    @classmethod
+    def _clone(
+        cls, dn: DataNode, cycle_id: Optional[CycleId] = None, scenario_id: Optional[ScenarioId] = None
+    ) -> DataNode:
+        dn.id = dn._new_id(dn._config_id)
+        dn._owner_id = cls._get_owner_id(dn._scope, cycle_id, scenario_id)
+        dn._parent_ids = set()
+        cls._set(dn)
+        # dn._clone_data()
+        return dn

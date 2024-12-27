@@ -521,3 +521,45 @@ class _ScenarioManager(_Manager[Scenario], _VersionMixin):
         for fil in filters:
             fil.update({"config_id": config_id})
         return cls._repository._load_all(filters)
+
+    @classmethod
+    def _clone(cls, scenario: Scenario) -> Scenario:
+        """
+        Clone a scenario.
+
+        Arguments:
+            scenario (Scenario): The scenario to clone.
+
+        Returns:
+            Scenario: The cloned scenario.
+        """
+        scenario.id = scenario._new_id(scenario.config_id)
+        # TODO: update sequences
+
+        # Clone tasks and data nodes
+        _task_manager = _TaskManagerFactory._build_manager()
+        _data_manager = _DataManagerFactory._build_manager()
+
+        cloned_tasks = set()
+        for task in scenario.tasks.values():
+            cloned_tasks.add(_task_manager._clone(task, None, scenario.id))
+        scenario._tasks = cloned_tasks
+
+        cloned_additional_data_nodes = set()
+        for data_node in scenario.additional_data_nodes.values():
+            cloned_additional_data_nodes.add(_data_manager._clone(data_node, None, scenario.id))
+        scenario._additional_data_nodes = cloned_additional_data_nodes
+
+        for task in cloned_tasks:
+            if scenario.id not in task._parent_ids:
+                task._parent_ids.update([scenario.id])
+                _task_manager._set(task)
+
+        for dn in cloned_additional_data_nodes:
+            if scenario.id not in dn._parent_ids:
+                dn._parent_ids.update([scenario.id])
+                _data_manager._set(dn)
+
+        cls._set(scenario)
+
+        return scenario

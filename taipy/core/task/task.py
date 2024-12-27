@@ -116,7 +116,7 @@ class Task(_Entity, _Labeled):
         skippable: bool = False,
     ) -> None:
         self._config_id = _validate_id(config_id)
-        self.id = id or TaskId(self.__ID_SEPARATOR.join([self._ID_PREFIX, self.config_id, str(uuid.uuid4())]))
+        self.id = id or self._new_id(config_id)
         self._owner_id = owner_id
         self._parent_ids = parent_ids or set()
         self._input = {dn.config_id: dn for dn in input or []}
@@ -126,6 +126,11 @@ class Task(_Entity, _Labeled):
         self._skippable = skippable
         self._properties = _Properties(self, **properties)
         self._init_done = True
+
+    @staticmethod
+    def _new_id(config_id: str) -> TaskId:
+        """Generate a unique task identifier."""
+        return TaskId(Task.__ID_SEPARATOR.join([Task._ID_PREFIX, config_id, str(uuid.uuid4())]))
 
     def __hash__(self) -> int:
         return hash(self.id)
