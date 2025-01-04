@@ -16,7 +16,7 @@ import { createTheme, Theme } from "@mui/material/styles";
 import merge from "lodash/merge";
 import { Dispatch } from "react";
 import { io, Socket } from "socket.io-client";
-import { nanoid } from 'nanoid';
+import { nanoid } from "nanoid";
 
 import { FilterDesc } from "../components/Taipy/tableUtils";
 import { stylekitModeThemes, stylekitTheme } from "../themes/stylekit";
@@ -48,6 +48,7 @@ export enum Types {
     Partial = "PARTIAL",
     Acknowledgement = "ACKNOWLEDGEMENT",
     Broadcast = "BROADCAST",
+    LocalStorage = "LOCAL_STORAGE",
 }
 
 /**
@@ -180,7 +181,7 @@ const getUserTheme = (mode: PaletteMode) => {
                     },
                 },
             },
-        })
+        }),
     );
 };
 
@@ -225,7 +226,7 @@ export const messageToAction = (message: WsMessage) => {
                 (message as unknown as NavigateMessage).to,
                 (message as unknown as NavigateMessage).params,
                 (message as unknown as NavigateMessage).tab,
-                (message as unknown as NavigateMessage).force
+                (message as unknown as NavigateMessage).force,
             );
         } else if (message.type === "ID") {
             return createIdAction((message as unknown as IdMessage).id);
@@ -267,7 +268,8 @@ export const getWsMessageListener = (dispatch: Dispatch<TaipyBaseAction>) => {
 // Broadcast
 const __BroadcastRepo: Record<string, Array<unknown>> = {};
 
-const stackBroadcast = (name: string, value: unknown) => (__BroadcastRepo[name] = __BroadcastRepo[name] || []).push(value);
+const stackBroadcast = (name: string, value: unknown) =>
+    (__BroadcastRepo[name] = __BroadcastRepo[name] || []).push(value);
 
 const broadcast_timeout = 250;
 
@@ -495,7 +497,7 @@ export const taipyReducer = (state: TaipyState, baseAction: TaipyBaseAction): Ta
                 action.payload,
                 state.id,
                 action.context,
-                action.propagate
+                action.propagate,
             );
             break;
         case Types.Action:
@@ -506,6 +508,9 @@ export const taipyReducer = (state: TaipyState, baseAction: TaipyBaseAction): Ta
             break;
         case Types.RequestUpdate:
             ackId = sendWsMessage(state.socket, "RU", action.name, action.payload, state.id, action.context);
+            break;
+        case Types.LocalStorage:
+            ackId = sendWsMessage(state.socket, "LS", action.name, action.payload, state.id, action.context);
             break;
     }
     if (ackId) return { ...state, ackList: [...state.ackList, ackId] };
@@ -545,7 +550,7 @@ export const createSendUpdateAction = (
     context: string | undefined,
     onChange?: string,
     propagate = true,
-    relName?: string
+    relName?: string,
 ): TaipyAction => ({
     type: Types.SendUpdate,
     name: name,
@@ -598,7 +603,7 @@ export const createRequestChartUpdateAction = (
     context: string | undefined,
     columns: string[],
     pageKey: string,
-    decimatorPayload: unknown | undefined
+    decimatorPayload: unknown | undefined,
 ): TaipyAction =>
     createRequestDataUpdateAction(
         name,
@@ -609,7 +614,7 @@ export const createRequestChartUpdateAction = (
         {
             decimatorPayload: decimatorPayload,
         },
-        true
+        true,
     );
 
 export const createRequestTableUpdateAction = (
@@ -631,7 +636,7 @@ export const createRequestTableUpdateAction = (
     filters?: Array<FilterDesc>,
     compare?: string,
     compareDatas?: string,
-    stateContext?: Record<string, unknown>
+    stateContext?: Record<string, unknown>,
 ): TaipyAction =>
     createRequestDataUpdateAction(
         name,
@@ -654,7 +659,7 @@ export const createRequestTableUpdateAction = (
             compare,
             compare_datas: compareDatas,
             state_context: stateContext,
-        })
+        }),
     );
 
 export const createRequestInfiniteTableUpdateAction = (
@@ -677,7 +682,7 @@ export const createRequestInfiniteTableUpdateAction = (
     compare?: string,
     compareDatas?: string,
     stateContext?: Record<string, unknown>,
-    reverse?: boolean
+    reverse?: boolean,
 ): TaipyAction =>
     createRequestDataUpdateAction(
         name,
@@ -702,7 +707,7 @@ export const createRequestInfiniteTableUpdateAction = (
             compare_datas: compareDatas,
             state_context: stateContext,
             reverse: !!reverse,
-        })
+        }),
     );
 
 /**
@@ -733,7 +738,7 @@ export const createRequestDataUpdateAction = (
     pageKey: string,
     payload: Record<string, unknown>,
     allData = false,
-    library?: string
+    library?: string,
 ): TaipyAction => {
     payload = payload || {};
     if (id !== undefined) {
@@ -771,7 +776,7 @@ export const createRequestUpdateAction = (
     context: string | undefined,
     names: string[],
     forceRefresh = false,
-    stateContext?: Record<string, unknown>
+    stateContext?: Record<string, unknown>,
 ): TaipyAction => ({
     type: Types.RequestUpdate,
     name: "",
@@ -846,7 +851,7 @@ export const createNavigateAction = (
     to?: string,
     params?: Record<string, string>,
     tab?: string,
-    force?: boolean
+    force?: boolean,
 ): TaipyNavigateAction => ({
     type: Types.Navigate,
     to,
@@ -881,4 +886,10 @@ export const createPartialAction = (name: string, create: boolean): TaipyPartial
     type: Types.Partial,
     name,
     create,
+});
+
+export const createLocalStorageAction = (localStorageData: Record<string, string>): TaipyAction => ({
+    type: Types.LocalStorage,
+    name: "",
+    payload: localStorageData,
 });

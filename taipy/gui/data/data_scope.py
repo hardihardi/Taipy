@@ -23,16 +23,23 @@ if t.TYPE_CHECKING:
 class _DataScopes:
     _GLOBAL_ID = "global"
     _META_PRE_RENDER = "pre_render"
-    _DEFAULT_METADATA = {_META_PRE_RENDER: False}
+    _META_LOCAL_STORAGE = "local_storage"
+    _DEFAULT_METADATA = {_META_PRE_RENDER: False, _META_LOCAL_STORAGE: {}}
 
     def __init__(self, gui: "Gui") -> None:
         self.__gui = gui
         self.__scopes: t.Dict[str, SimpleNamespace] = {_DataScopes._GLOBAL_ID: SimpleNamespace()}
         # { scope_name: { metadata: value } }
         self.__scopes_metadata: t.Dict[str, t.Dict[str, t.Any]] = {
-            _DataScopes._GLOBAL_ID: _DataScopes._DEFAULT_METADATA.copy()
+            _DataScopes._GLOBAL_ID: _DataScopes._get_new_default_metadata()
         }
         self.__single_client = True
+
+    @staticmethod
+    def _get_new_default_metadata() -> t.Dict[str, t.Any]:
+        metadata = _DataScopes._DEFAULT_METADATA.copy()
+        metadata[_DataScopes._META_LOCAL_STORAGE] = {}
+        return metadata
 
     def set_single_client(self, value: bool) -> None:
         self.__single_client = value
@@ -66,7 +73,7 @@ class _DataScopes:
             return
         if id not in self.__scopes:
             self.__scopes[id] = SimpleNamespace()
-            self.__scopes_metadata[id] = _DataScopes._DEFAULT_METADATA.copy()
+            self.__scopes_metadata[id] = _DataScopes._get_new_default_metadata()
             # Propagate shared variables to the new scope from the global scope
             for var in self.__gui._get_shared_variables():
                 if hasattr(self.__scopes[_DataScopes._GLOBAL_ID], var):
