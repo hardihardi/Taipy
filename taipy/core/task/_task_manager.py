@@ -226,3 +226,15 @@ class _TaskManager(_Manager[Task], _VersionMixin):
         for fil in filters:
             fil.update({"config_id": config_id})
         return cls._repository._load_all(filters)
+
+    @classmethod
+    def _clone(cls, task: Task, cycle_id: Optional[CycleId] = None, scenario_id: Optional[ScenarioId] = None) -> Task:
+        data_manager = _DataManagerFactory._build_manager()
+        inputs = [data_manager._clone(i, cycle_id, scenario_id) for i in task.input.values()]
+        outputs = [data_manager._clone(o, cycle_id, scenario_id) for o in task.output.values()]
+        task.id = task._new_id(task.config_id)
+        task._parent_ids = set()
+        for dn in set(inputs + outputs):
+            dn._parent_ids.update([task.id])
+        cls._set(task)
+        return task
