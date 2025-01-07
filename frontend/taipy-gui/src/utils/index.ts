@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-import { toZonedTime, getTimezoneOffset, formatInTimeZone } from "date-fns-tz";
+import { toZonedTime, formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { format } from "date-fns";
 import { sprintf } from "sprintf-js";
 import { FormatConfig } from "../context/taipyReducers";
@@ -61,31 +61,15 @@ interface StyleKit {
 
 // return date with right time and tz
 export const getTimeZonedDate = (d: Date, tz: string, withTime: boolean): Date => {
-    const newDate = d;
-    // dispatch new date which offset by the timeZone differences between client and server
-    const hours = getClientServerTimeZoneOffset(tz) / 60;
-    const minutes = getClientServerTimeZoneOffset(tz) % 60;
-    newDate.setSeconds(0);
-    newDate.setMilliseconds(0);
-    if (withTime) {
-        // Parse data with selected time if it is a datetime selector
-        newDate.setHours(newDate.getHours() + hours);
-        newDate.setMinutes(newDate.getMinutes() + minutes);
-    } else {
-        // Parse data with 00:00 UTC time if it is a date selector
-        newDate.setHours(hours);
-        newDate.setMinutes(minutes);
+    if (!withTime) {
+        d.setHours(0, 0, 0, 0);
     }
-    return newDate;
+    return fromZonedTime(d, tz);
 };
 
 export const dateToString = (d: Date, withTime: boolean = true): string => {
     return withTime ? d.toISOString() : d.toDateString();
 };
-
-// return client server timeZone offset in minutes
-export const getClientServerTimeZoneOffset = (tz: string): number =>
-    (getTimezoneOffset(TIMEZONE_CLIENT) - getTimezoneOffset(tz)) / 60000;
 
 export const getDateTime = (value: string | null | undefined, tz?: string, withTime = true): Date | null => {
     if (value === null || value === undefined) {
@@ -114,7 +98,7 @@ export const getDateTimeString = (
     datetimeformat: string | undefined,
     formatConf: FormatConfig,
     tz?: string,
-    withTime: boolean = true
+    withTime: boolean = true,
 ): string => {
     const dateVal = getDateTime(value);
     try {
@@ -123,7 +107,7 @@ export const getDateTimeString = (
                 dateVal || "",
                 formatConf.forceTZ || !tz ? formatConf.timeZone : tz,
                 datetimeformat || formatConf.dateTime,
-                { useAdditionalDayOfYearTokens: true }
+                { useAdditionalDayOfYearTokens: true },
             );
         }
         return format(dateVal || 0, datetimeformat || formatConf.date, { useAdditionalDayOfYearTokens: true });
@@ -170,7 +154,7 @@ export const formatWSValue = (
     value: string | number,
     dataType: string | undefined,
     dataFormat: string | undefined,
-    formatConf: FormatConfig
+    formatConf: FormatConfig,
 ): string => {
     dataType = dataType || typeof value;
     switch (dataType) {
